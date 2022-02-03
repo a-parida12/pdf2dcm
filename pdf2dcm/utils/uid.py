@@ -1,7 +1,12 @@
 import datetime
 
 
-def generate_random_uid():
+def generate_random_uid() -> str:
+    """Generate a dicom compatible UID
+
+    Returns:
+        [str]: the generated UId based on date and time
+    """
     return "1.9.9." + str(datetime.datetime.now().strftime("%H%M%S%f%d%m%Y"))
 
 
