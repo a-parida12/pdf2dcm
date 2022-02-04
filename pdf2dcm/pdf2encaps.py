@@ -2,12 +2,10 @@ from .base import BaseConverter
 from .utils import uid
 from pathlib import Path
 import os
+from pydicom.dataset import FileMetaDataset, FileDataset
 
 
-from pydicom.dataset import Dataset, FileDataset
-
-
-class Pdf2EncapsPdf(BaseConverter):
+class Pdf2EncapsDCM(BaseConverter):
     def __init__(self):
         pass
 
@@ -18,7 +16,7 @@ class Pdf2EncapsPdf(BaseConverter):
         file_meta.ImplementationClassUID = uid.ENCAPS_PDF_IMPL_CLASS_UID
         return file_meta
 
-    def encapsulate_pdf(self, file_meta, pdf_file_path) -> Dataset:
+    def encapsulate_pdf(self, file_meta, pdf_file_path) -> FileMetaDataset:
         ds = self._get_dicom_body(file_meta)
         ds.SOPClassUID = uid.ENCAPS_PDF_MEDIA_SOP_CLASS_UID
 

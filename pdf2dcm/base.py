@@ -1,6 +1,7 @@
 from pathlib import Path
 import pydicom
-from pydicom.dataset import Dataset, FileDataset
+from pydicom.dataset import FileMetaDataset, FileDataset
+from pydicom.errors import InvalidDicomError
 from abc import ABC, abstractmethod
 
 from .utils.uid import generate_random_uid
@@ -21,7 +22,9 @@ class BaseConverter(ABC):
             "SOPInstanceUID",
         ]
 
-    def personalize_dcm(self, template_dcm_path: Path, pdf_dcm: Dataset) -> Dataset:
+    def personalize_dcm(
+        self, template_dcm_path: Path, pdf_dcm: FileDataset
+    ) -> FileDataset:
         template_dcm = pydicom.filereader(template_dcm_path)
 
         for field in self.repersonalisation_fields:
@@ -42,14 +45,14 @@ class BaseConverter(ABC):
         return pdf_dcm
 
     @staticmethod
-    def _get_dicom_meta() -> Dataset:
+    def _get_dicom_meta() -> FileMetaDataset:
         """Generates the file meta-data for a DICOM PDF
 
         Returns:
-            Dataset: dcm header with meta information
+            FileMetaDataset: dcm header with meta information
         """
 
-        file_meta = Dataset()
+        file_meta = FileMetaDataset()
         file_meta.FileMetaInformationVersion = b"\x00\x01"
         file_meta.TransferSyntaxUID = (
             "1.2.840.10008.1.2.1"  # std transfer uid little endian, implicit vr
@@ -58,11 +61,11 @@ class BaseConverter(ABC):
         return file_meta
 
     @staticmethod
-    def _get_dicom_body(meta: Dataset) -> FileDataset:
+    def _get_dicom_body(meta: FileMetaDataset) -> FileDataset:
         """Creates a temporary file as part of the DICOM PDF creation process
 
         Args:
-            meta (Dataset): the meta information of the dicom file
+            meta (FileMetaDataset): the meta information of the dicom file
 
         Returns:
             FileDataset: dicom file body information
@@ -99,7 +102,20 @@ class BaseConverter(ABC):
         return store_path
 
     @staticmethod
-    def check_valid_dcm(path: Path):
+    def check_valid_dcm(path: Path) -> bool:
+        """check whether given file is a dicom or not
+
+        Args:
+            path (Path): path to a dicom file
+
+        Returns:
+            bool: boolean value True for dicom else False
+        """
+        try:
+            pydicom.dcmread(path, defer_size=1024)
+        except InvalidDicomError:
+            return False
+
         return True
 
     @abstractmethod

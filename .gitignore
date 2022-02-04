@@ -131,3 +131,4 @@ dmypy.json
 # env 
 .pdf2dicom/
 .pdf2dcm
+*DS_Store*
