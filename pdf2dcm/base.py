@@ -25,7 +25,7 @@ class BaseConverter(ABC):
     def personalize_dcm(
         self, template_dcm_path: Path, pdf_dcm: FileDataset
     ) -> FileDataset:
-        template_dcm = pydicom.filereader(template_dcm_path)
+        template_dcm = pydicom.dcmread(template_dcm_path)
 
         for field in self.repersonalisation_fields:
             try:
@@ -91,11 +91,11 @@ class BaseConverter(ABC):
         """check and store the dicom at a given location
 
         Args:
-            store_path (str): output storage path for the pdf dicom
+            store_path (Path): output storage path for the pdf dicom
             ds (FileDataset): the dicom pdf
 
         Returns:
-            [str]: output storage path for the pdf dicom
+            [Path]: output storage path for the pdf dicom
         """
         ds.fix_meta_info()
         ds.save_as(store_path)
@@ -119,5 +119,5 @@ class BaseConverter(ABC):
         return True
 
     @abstractmethod
-    def run(self, path_pdf: Path, path_template_dcm: Path):
+    def run(self, path_pdf: str, path_template_dcm: str, suffix: str) -> Path:
         pass

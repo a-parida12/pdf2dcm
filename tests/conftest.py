@@ -13,3 +13,8 @@ from pdf2dcm import Pdf2EncapsDCM  # noqa
 @pytest.fixture
 def baseconverter():
     yield Pdf2EncapsDCM()
+
+
+@pytest.fixture
+def pdfencapsconverter():
+    yield Pdf2EncapsDCM()

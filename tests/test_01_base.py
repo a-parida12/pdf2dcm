@@ -32,6 +32,7 @@ def test_01_3_check_dcm(baseconverter):
     assert baseconverter.check_valid_dcm(dicom_path)
 
 
+@pytest.mark.base
 def test_01_4_save_dcm(baseconverter):
     dicom_path = "tests/test_data/CT_small.dcm"
     ds = pydicom.dcmread(dicom_path, defer_size=1024)
