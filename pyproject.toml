@@ -26,7 +26,7 @@ build-backend = "poetry.core.masonry.api"
 
 [tool.semantic_release]
 version_variable = [
-    "pdf2dicom/__init__.py:__version__",
+    "pdf2dcm/__init__.py:__version__",
     "pyproject.toml:version"
 ]
 branch = "master"
