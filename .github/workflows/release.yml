@@ -1,8 +1,8 @@
 name: Test and Release 
 on:
-  pull_request:
+  push:
     branches: [ main ]
-
+  
 jobs:
   Quality:
     runs-on: ubuntu-latest
