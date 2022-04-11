@@ -1,4 +1,6 @@
 # pdf2dcm
+[![Python Application Testing](https://github.com/a-parida12/pdf2dcm/actions/workflows/tests.yml/badge.svg?branch=master)](https://github.com/a-parida12/pdf2dcm/actions/workflows/tests.yml)[![Test and Release](https://github.com/a-parida12/pdf2dcm/actions/workflows/release.yml/badge.svg?branch=master)](https://github.com/a-parida12/pdf2dcm/actions/workflows/release.yml)
+
 PDF to DICOM Converter
 
 > A python package for PDF to Encapsulated DCM and PDF to DICOM RGB converter
@@ -11,7 +13,7 @@ The python package is available for use on PyPI. It can be setup simply via pip
 pip install pdf2dcm
 ```
 
-To the check the setup, simply check the version number of the `npdf2dcmekton` package by
+To the check the setup, simply check the version number of the `pdf2dcm` package by
 
 ```bash
 python -c 'import pdf2dcm; print(pdf2dcm.__version__)'
