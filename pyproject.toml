@@ -29,7 +29,7 @@ version_variable = [
     "pdf2dcm/__init__.py:__version__",
     "pyproject.toml:version"
 ]
-branch = "master"
+branch = "main"
 upload_to_pypi = true
 upload_to_release = true
 build_command = "pip install poetry && poetry build"
