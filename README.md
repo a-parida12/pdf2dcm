@@ -1,4 +1,6 @@
 # pdf2dcm
+[![Python Application Testing](https://github.com/a-parida12/pdf2dcm/actions/workflows/tests.yml/badge.svg?branch=master)](https://github.com/a-parida12/pdf2dcm/actions/workflows/tests.yml)[![Test and Release](https://github.com/a-parida12/pdf2dcm/actions/workflows/release.yml/badge.svg?branch=master)](https://github.com/a-parida12/pdf2dcm/actions/workflows/release.yml)
+
 PDF to DICOM Converter
 
 > A python package for PDF to Encapsulated DCM and PDF to DICOM RGB converter
