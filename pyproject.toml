@@ -11,6 +11,7 @@ keywords = ["dicom", "pdf", "pdf2dcm",  "pdf2dicom", "pydicom", "pdf2dicomRGB"]
 [tool.poetry.dependencies]
 python = "^3.8"
 pydicom = "^2.2.2"
+pdf2image = "^1.16.0"
 
 [tool.poetry.dev-dependencies]
 pytest = "^6.2.5"
