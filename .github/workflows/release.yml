@@ -35,6 +35,17 @@ jobs:
     - name: Test with pytest
       run: |
         poetry run python -m pytest -v tests
+
+    - name: Upload coverage to Codecov
+      uses: codecov/codecov-action@v2.1.0
+      with:
+        # token: ${{ secrets.CODECOV_TOKEN }} # not required for public repo
+        directory: ./coverage/reports/
+        fail_ci_if_error: true
+        files: ./coverage*.xml
+        flags: pytest
+        name: codecov-umbrella
+        verbose: true
     
   Release:
     needs: Quality
