@@ -30,9 +30,9 @@ class BaseConverter(ABC):
         for field in self.repersonalisation_fields:
             try:
                 pdf_dcm[field] = template_dcm[field]
-            except Exception:
+            except KeyError:
                 if "UID" in field:
-                    pdf_dcm[field] = generate_random_uid()
+                    pdf_dcm.add_new(field, "UI", generate_random_uid())
                     warning_msg = f"""{field} not found in DICOM {template_dcm_path},
                     using randomly generated values!"""
                 else:
