@@ -36,7 +36,8 @@ class BaseConverter(ABC):
                     warning_msg = f"""{field} not found in DICOM {template_dcm_path},
                     using randomly generated values!"""
                 else:
-                    pdf_dcm[field] = ""
+                    # need to get the corresponding VR for the field
+                    pdf_dcm.add_new(field, "PN", "")
                     warning_msg = f"""{field} not found in DICOM {template_dcm_path},
                     leaving the field empty!"""
 
