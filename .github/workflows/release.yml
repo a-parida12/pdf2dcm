@@ -35,6 +35,17 @@ jobs:
     - name: Test with pytest
       run: |
         poetry run python -m pytest -v tests
+
+    - name: Upload coverage to Codecov
+      uses: codecov/codecov-action@v2.1.0
+      with:
+        # token: ${{ secrets.CODECOV_TOKEN }} # not required for public repo
+        directory: ./coverage/reports/
+        fail_ci_if_error: true
+        files: ./coverage*.xml
+        flags: pytest
+        name: codecov-umbrella
+        verbose: true
     
   Release:
     needs: Quality
@@ -47,8 +58,11 @@ jobs:
           python-version: 3.8
       - name: Checkout code
         uses: actions/checkout@v2
+        with:
+          fetch-depth: 0
+          token: ${{ secrets.GH_TOKEN }}
       - name: Python Semantic Release
-        uses: relekang/python-semantic-release@master
+        uses: aadhithya/py-semantic-release-action@master
         with:
           github_token: ${{ secrets.GH_TOKEN }}
           repository_username: ${{ secrets.PYPI_USER }}
