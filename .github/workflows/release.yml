@@ -34,15 +34,16 @@ jobs:
 
     - name: Test with pytest
       run: |
-        poetry run python -m pytest -v tests
+        poetry run pytest -v tests --cov=./pdf2dcm --cov-report=xml
+
 
     - name: Upload coverage to Codecov
       uses: codecov/codecov-action@v2.1.0
       with:
-        # token: ${{ secrets.CODECOV_TOKEN }} # not required for public repo
+        token: ${{ secrets.CODECOV_TOKEN }}
         directory: ./coverage/reports/
         fail_ci_if_error: true
-        files: ./coverage*.xml
+        files: ./coverage.xml,./coverage1.xml,./coverage2.xml
         flags: pytest
         name: codecov-umbrella
         verbose: true
