@@ -36,6 +36,7 @@ jobs:
       run: |
         poetry run pytest -v tests --cov=./pdf2dcm --cov-report=xml
 
+
     - name: Upload coverage to Codecov
       uses: codecov/codecov-action@v2.1.0
       with:
