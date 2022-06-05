@@ -7,8 +7,8 @@ from pydicom.dataset import FileMetaDataset, FileDataset
 
 class Pdf2EncapsDCM(BaseConverter):
     def __init__(self):
+        """Class for Encapsulated PDF generation"""
         super().__init__()
-        pass
 
     def _get_encapspdf_meta(self) -> FileMetaDataset:
         """Get and set the file meta information for the pdf encaps dicom
