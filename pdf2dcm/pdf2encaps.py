@@ -1,6 +1,7 @@
 from .base import BaseConverter
 from .utils import uid
 from pathlib import Path
+from typing import List
 import os
 from pydicom.dataset import FileMetaDataset, FileDataset
 
@@ -58,7 +59,7 @@ class Pdf2EncapsDCM(BaseConverter):
         path_pdf: str,
         path_template_dcm: str = "",
         suffix: str = ".dcm",
-    ) -> Path:
+    ) -> List[Path]:
         """Run the complete encapsulation procedure on a given a pdf
 
         Args:
@@ -68,7 +69,7 @@ class Pdf2EncapsDCM(BaseConverter):
             suffix (str, optional): suffix of the dicom files. Defaults to ".dcm".
 
         Returns:
-            Path: path of the stored encapsulated dcm
+            List[Path]: list path of the stored encapsulated dcm
         """
         # convert to path
         path_pdf_path = Path(path_pdf)
@@ -86,4 +87,4 @@ class Pdf2EncapsDCM(BaseConverter):
         name = path_pdf_path.stem
         path = path_pdf_path.parent
         save_path = Path(os.path.join(path, f"{name}{suffix}"))
-        return self._store_ds(save_path, encapspdf_dcm)
+        return [self._store_ds(save_path, encapspdf_dcm)]

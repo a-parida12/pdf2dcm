@@ -6,6 +6,7 @@ from abc import ABC, abstractmethod
 
 from .utils.uid import generate_random_uid
 import tempfile
+from typing import List
 import datetime
 
 import warnings
@@ -120,5 +121,5 @@ class BaseConverter(ABC):
         return True
 
     @abstractmethod
-    def run(self, path_pdf: str, path_template_dcm: str, suffix: str) -> Path:
+    def run(self, path_pdf: str, path_template_dcm: str, suffix: str) -> List[Path]:
         pass
