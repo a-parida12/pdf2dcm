@@ -8,6 +8,8 @@ PDF to DICOM Converter
 
 ## SETUP
 
+### Python Package Setup
+
 The python package is available for use on PyPI. It can be setup simply via pip
 
 ```bash
@@ -18,6 +20,24 @@ To the check the setup, simply check the version number of the `pdf2dcm` package
 
 ```bash
 python -c 'import pdf2dcm; print(pdf2dcm.__version__)'
+```
+
+### Poppler Setup
+Poppler is a popular project that is used for the creation of Dicom RGB Secondary Capture. You can check if you already have it installed by calling `pdftoppm -h` in your terminal/cmd. To install poppler these are some of the recommended ways-
+
+Conda
+```bash
+conda install -c conda-forge poppler
+```
+
+Ubuntu
+```bash
+sudo apt-get install poppler-utils
+```
+
+MacOS
+```bash
+brew install poppler
 ```
 
 ## PDF to Encapsulated DCM
