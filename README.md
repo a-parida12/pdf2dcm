@@ -50,7 +50,7 @@ from pdf2dcm import Pdf2EncapsDCM
 converter = Pdf2EncapsDCM()
 converted_dcm = converter.run(path_pdf='tests/test_data/test_file.pdf', path_template_dcm='tests/test_data/CT_small.dcm', suffix =".dcm")
 print(converted_dcm)
-# tests/test_data/test_file'
+# [ 'tests/test_data/test_file' ]
 ```
 
 Parameters `converter.run`:
@@ -61,7 +61,7 @@ Parameters `converter.run`:
 
 Returns:
 
-- `Path`: path of the stored encapsulated dcm
+- `List[Path]`: list of path of the stored encapsulated dcm
 
 ### Notes
 

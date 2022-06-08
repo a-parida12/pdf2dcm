@@ -34,7 +34,7 @@ def test_02_2_end2end(pdfencapsconverter):
     ref_dicom = "tests/test_data/CT_small.dcm"
 
     # no personalisation
-    stored_path = pdfencapsconverter.run(path_pdf)
+    stored_path = pdfencapsconverter.run(path_pdf)[0]
     # check generation
     assert os.path.exists(stored_path)
     assert pdfencapsconverter.check_valid_dcm(stored_path)
@@ -46,7 +46,7 @@ def test_02_2_end2end(pdfencapsconverter):
     os.remove(stored_path)
 
     # with personalisation
-    stored_path = pdfencapsconverter.run(path_pdf, ref_dicom)
+    stored_path = pdfencapsconverter.run(path_pdf, ref_dicom)[0]
     assert os.path.exists(stored_path)
     assert pdfencapsconverter.check_valid_dcm(stored_path)
 
@@ -60,7 +60,7 @@ def test_02_2_end2end(pdfencapsconverter):
     os.remove(stored_path)
 
     # check no extension dcm creation
-    stored_path = pdfencapsconverter.run(path_pdf, ref_dicom, suffix="")
+    stored_path = pdfencapsconverter.run(path_pdf, ref_dicom, suffix="")[0]
     assert str(stored_path) == "tests/test_data/test_file"
     assert pdfencapsconverter.check_valid_dcm(stored_path)
 
