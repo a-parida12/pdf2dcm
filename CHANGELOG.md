@@ -2,6 +2,18 @@
 
 <!--next-version-placeholder-->
 
+## v0.2.0 (2022-06-09)
+### Feature
+* **Pdf2RgbSC:** Class to implement Pdf2RgbSC ([`3bd74cc`](https://github.com/a-parida12/pdf2dcm/commit/3bd74ccc5a4ad8e226592db007d706aca63e8464))
+
+### Fix
+* **Pdf2EncapsDCM:** Updated return type in tests ([`42db74d`](https://github.com/a-parida12/pdf2dcm/commit/42db74ddcffba3779e0edbf652b1503fa54704cf))
+
+### Documentation
+* **README:** Updated with new instructions ([`b457292`](https://github.com/a-parida12/pdf2dcm/commit/b45729272f95b5c02e22b74f1fc113fee61e3721))
+* **README:** Updated info about poppler setup ([`fa28b3c`](https://github.com/a-parida12/pdf2dcm/commit/fa28b3cb03af1eb882e2b74f4fff6249fff1959d))
+* **pdf2encaps:** Added docstring to class init ([`9249f39`](https://github.com/a-parida12/pdf2dcm/commit/9249f39e09d3a559ba1d4fa21535f5c56f8788d7))
+
 ## v0.1.2 (2022-05-31)
 ### Fix
 * **repersonalisation:** Non ui field ([`6f40654`](https://github.com/a-parida12/pdf2dcm/commit/6f40654cc53306a958864ea6d52928d1c6ba9bf9))
