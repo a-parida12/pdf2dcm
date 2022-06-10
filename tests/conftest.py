@@ -7,7 +7,7 @@ from os.path import dirname as d
 parent_dir = f"{d(d(abspath(__file__)))}"
 sys.path.append(parent_dir)
 
-from pdf2dcm import Pdf2EncapsDCM  # noqa
+from pdf2dcm import Pdf2EncapsDCM, Pdf2RgbSC  # noqa
 
 
 @pytest.fixture
@@ -18,3 +18,8 @@ def baseconverter():
 @pytest.fixture
 def pdfencapsconverter():
     yield Pdf2EncapsDCM()
+
+
+@pytest.fixture
+def rgbscconverter():
+    yield Pdf2RgbSC()
