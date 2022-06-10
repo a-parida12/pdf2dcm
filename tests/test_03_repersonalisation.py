@@ -10,7 +10,7 @@ def test_03_1_full_personlisation(pdfencapsconverter):
     ref_dicom = "tests/test_data/CT_small.dcm"
 
     # with personalisation
-    stored_path = pdfencapsconverter.run(path_pdf, ref_dicom)
+    stored_path = pdfencapsconverter.run(path_pdf, ref_dicom)[0]
 
     assert os.path.exists(stored_path)
     assert pdfencapsconverter.check_valid_dcm(stored_path)
@@ -33,7 +33,7 @@ def test_03_2_uid_missing(pdfencapsconverter):
     ref_dicom = "tests/test_data/CT_small_no_UID.dcm"
 
     # with personalisation
-    stored_path = pdfencapsconverter.run(path_pdf, ref_dicom)
+    stored_path = pdfencapsconverter.run(path_pdf, ref_dicom)[0]
     assert os.path.exists(stored_path)
     assert pdfencapsconverter.check_valid_dcm(stored_path)
 
@@ -56,7 +56,7 @@ def test_03_2_name_missing(pdfencapsconverter):
     ref_dicom = "tests/test_data/CT_small_no_name.dcm"
 
     # with personalisation
-    stored_path = pdfencapsconverter.run(path_pdf, ref_dicom)
+    stored_path = pdfencapsconverter.run(path_pdf, ref_dicom)[0]
     assert os.path.exists(stored_path)
     assert pdfencapsconverter.check_valid_dcm(stored_path)
 
