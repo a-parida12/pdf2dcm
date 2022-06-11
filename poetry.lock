@@ -392,13 +392,6 @@ pytest = ">=4.6"
 [package.extras]
 testing = ["fields", "hunter", "process-tests", "six", "pytest-xdist", "virtualenv"]
 
-[[package]]
-name = "python-poppler"
-version = "0.3.0"
-description = "A Python binding to poppler-cpp"
-category = "main"
-optional = false
-python-versions = ">=3.6"
 
 [[package]]
 name = "pyyaml"
@@ -802,6 +795,9 @@ pytest = [
 pytest-cov = [
     {file = "pytest-cov-3.0.0.tar.gz", hash = "sha256:e7f0f5b1617d2210a2cabc266dfe2f4c75a8d32fb89eafb7ad9d06f6d076d470"},
     {file = "pytest_cov-3.0.0-py3-none-any.whl", hash = "sha256:578d5d15ac4a25e5f961c938b85a05b09fdaae9deef3bb6de9a6e766622ca7a6"},
+]
+python-poppler = [
+    {file = "python-poppler-0.3.0.tar.gz", hash = "sha256:8b6a157e51cbb4c08353a21ca3f6f396558759cdfb0b80071379ad89d5f7c533"},
 ]
 pyyaml = [
     {file = "PyYAML-6.0-cp310-cp310-macosx_10_9_x86_64.whl", hash = "sha256:d4db7c7aef085872ef65a8fd7d6d09a14ae91f691dec3e87ee5ee0539d516f53"},

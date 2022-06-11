@@ -14,6 +14,7 @@ jobs:
 
     - name: Configure poetry & Install dependencies
       run: |
+       apt-get install poppler-utils
        python -m pip install --upgrade pip
        pip install poetry && poetry install
     
