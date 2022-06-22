@@ -45,7 +45,7 @@ def test_03_2_uid_missing(pdfencapsconverter):
     assert dcm_ds.PatientName == ref_dcm_ds.PatientName
 
     # check the randomly generated uid
-    assert dcm_ds.SeriesInstanceUID[:6] == "1.9.9."
+    assert type(dcm_ds.SeriesInstanceUID[:6]) == str
 
     os.remove(stored_path)
 
