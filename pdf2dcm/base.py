@@ -4,7 +4,8 @@ from pydicom.dataset import FileMetaDataset, FileDataset
 from pydicom.errors import InvalidDicomError
 from abc import ABC, abstractmethod
 
-from .utils.uid import generate_random_uid
+from pydicom.uid import generate_uid
+
 import tempfile
 from typing import List
 import datetime
@@ -33,7 +34,7 @@ class BaseConverter(ABC):
                 pdf_dcm[field] = template_dcm[field]
             except KeyError:
                 if "UID" in field:
-                    pdf_dcm.add_new(field, "UI", generate_random_uid())
+                    pdf_dcm.add_new(field, "UI", generate_uid())
                     warning_msg = f"""{field} not found in DICOM {template_dcm_path},
                     using randomly generated values!"""
                 else:
