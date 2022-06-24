@@ -2,6 +2,10 @@
 
 <!--next-version-placeholder-->
 
+## v0.2.1 (2022-06-24)
+### Fix
+* **uidgeneration:** Pydicom now generates uid ([`51f2ac5`](https://github.com/a-parida12/pdf2dcm/commit/51f2ac5bba4f394e805def77df441953b57a8ef9))
+
 ## v0.2.0 (2022-06-09)
 ### Feature
 * **Pdf2RgbSC:** Class to implement Pdf2RgbSC ([`3bd74cc`](https://github.com/a-parida12/pdf2dcm/commit/3bd74ccc5a4ad8e226592db007d706aca63e8464))
