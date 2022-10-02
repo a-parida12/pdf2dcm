@@ -2,6 +2,10 @@
 
 <!--next-version-placeholder-->
 
+## v0.3.0 (2022-10-02)
+### Feature
+* **doc:** Pydoc3 added to workflow ([`bc22d5f`](https://github.com/a-parida12/pdf2dcm/commit/bc22d5f280737e72c400789d284b82712406c41e))
+
 ## v0.2.1 (2022-06-24)
 ### Fix
 * **uidgeneration:** Pydicom now generates uid ([`51f2ac5`](https://github.com/a-parida12/pdf2dcm/commit/51f2ac5bba4f394e805def77df441953b57a8ef9))
