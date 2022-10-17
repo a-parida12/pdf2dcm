@@ -6,6 +6,7 @@ import os
 from pydicom.dataset import FileMetaDataset, FileDataset
 from pdf2image import convert_from_path
 from copy import deepcopy
+from PIL import Image
 
 
 class Pdf2RgbSC(BaseConverter):
@@ -16,7 +17,7 @@ class Pdf2RgbSC(BaseConverter):
             dpi (int, optional): dots per inch, set resolution of the image. Defaults to 144.
             merge_pages (bool, optional): multiple pgs must be put into 1 dicom. Defaults to False.
         """
-        self.merge_pages = merge_pages
+        self.merge_pages_flag = merge_pages
         self.dpi = dpi
         super().__init__()
 
@@ -64,6 +65,26 @@ class Pdf2RgbSC(BaseConverter):
 
         return ds
 
+    def merge_pages(self, pages: list) -> list:
+        """method to horizontally stack the pages of a report
+
+        Args:
+            pages (list): list of Pil images that needs to bestacked
+
+        Returns:
+            list: list with one element of teh stacked imges
+        """
+        widths, heights = zip(*(i.size for i in pages))
+        width = max(widths)
+        height = sum(heights)
+        new_im = Image.new("RGB", (width, height))
+        y_offset = 0
+        for im in pages:
+            new_im.paste(im, (0, y_offset))
+            y_offset += im.size[1]
+
+        return [new_im]
+
     def run(
         self,
         path_pdf: str,
@@ -97,10 +118,9 @@ class Pdf2RgbSC(BaseConverter):
 
         # pdf pages as images
         pages = convert_from_path(path_pdf_path, dpi=self.dpi)
-        if self.merge_pages:
-            raise NotImplementedError(
-                "Merged Pages DCM Secondary Caputre is not implemented yet"
-            )
+
+        if self.merge_pages_flag:
+            pages = self.merge_pages(pages)
 
         # store path
         name = path_pdf_path.stem
