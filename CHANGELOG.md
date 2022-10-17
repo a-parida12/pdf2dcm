@@ -2,6 +2,10 @@
 
 <!--next-version-placeholder-->
 
+## v0.4.0 (2022-10-17)
+### Feature
+* **Pdf2RgbSC:** Allow for merging files ([#30](https://github.com/a-parida12/pdf2dcm/issues/30)) ([`7585fc3`](https://github.com/a-parida12/pdf2dcm/commit/7585fc3245cd6fa3e2c0b90a722a5e410324ed48))
+
 ## v0.3.0 (2022-10-02)
 ### Feature
 * **doc:** Pydoc3 added to workflow ([`bc22d5f`](https://github.com/a-parida12/pdf2dcm/commit/bc22d5f280737e72c400789d284b82712406c41e))
