@@ -34,6 +34,7 @@ import os
 from pydicom.dataset import FileMetaDataset, FileDataset
 from pdf2image import convert_from_path
 from copy import deepcopy
+from PIL import Image
 
 
 class Pdf2RgbSC(BaseConverter):
@@ -44,7 +45,7 @@ class Pdf2RgbSC(BaseConverter):
             dpi (int, optional): dots per inch, set resolution of the image. Defaults to 144.
             merge_pages (bool, optional): multiple pgs must be put into 1 dicom. Defaults to False.
         &#34;&#34;&#34;
-        self.merge_pages = merge_pages
+        self.merge_pages_flag = merge_pages
         self.dpi = dpi
         super().__init__()
 
@@ -92,6 +93,26 @@ class Pdf2RgbSC(BaseConverter):
 
         return ds
 
+    def merge_pages(self, pages: list) -&gt; list:
+        &#34;&#34;&#34;method to horizontally stack the pages of a report
+
+        Args:
+            pages (list): list of Pil images that needs to bestacked
+
+        Returns:
+            list: list with one element of teh stacked imges
+        &#34;&#34;&#34;
+        widths, heights = zip(*(i.size for i in pages))
+        width = max(widths)
+        height = sum(heights)
+        new_im = Image.new(&#34;RGB&#34;, (width, height))
+        y_offset = 0
+        for im in pages:
+            new_im.paste(im, (0, y_offset))
+            y_offset += im.size[1]
+
+        return [new_im]
+
     def run(
         self,
         path_pdf: str,
@@ -125,10 +146,9 @@ class Pdf2RgbSC(BaseConverter):
 
         # pdf pages as images
         pages = convert_from_path(path_pdf_path, dpi=self.dpi)
-        if self.merge_pages:
-            raise NotImplementedError(
-                &#34;Merged Pages DCM Secondary Caputre is not implemented yet&#34;
-            )
+
+        if self.merge_pages_flag:
+            pages = self.merge_pages(pages)
 
         # store path
         name = path_pdf_path.stem
@@ -180,7 +200,7 @@ inheritance.</p>
             dpi (int, optional): dots per inch, set resolution of the image. Defaults to 144.
             merge_pages (bool, optional): multiple pgs must be put into 1 dicom. Defaults to False.
         &#34;&#34;&#34;
-        self.merge_pages = merge_pages
+        self.merge_pages_flag = merge_pages
         self.dpi = dpi
         super().__init__()
 
@@ -228,6 +248,26 @@ inheritance.</p>
 
         return ds
 
+    def merge_pages(self, pages: list) -&gt; list:
+        &#34;&#34;&#34;method to horizontally stack the pages of a report
+
+        Args:
+            pages (list): list of Pil images that needs to bestacked
+
+        Returns:
+            list: list with one element of teh stacked imges
+        &#34;&#34;&#34;
+        widths, heights = zip(*(i.size for i in pages))
+        width = max(widths)
+        height = sum(heights)
+        new_im = Image.new(&#34;RGB&#34;, (width, height))
+        y_offset = 0
+        for im in pages:
+            new_im.paste(im, (0, y_offset))
+            y_offset += im.size[1]
+
+        return [new_im]
+
     def run(
         self,
         path_pdf: str,
@@ -261,10 +301,9 @@ inheritance.</p>
 
         # pdf pages as images
         pages = convert_from_path(path_pdf_path, dpi=self.dpi)
-        if self.merge_pages:
-            raise NotImplementedError(
-                &#34;Merged Pages DCM Secondary Caputre is not implemented yet&#34;
-            )
+
+        if self.merge_pages_flag:
+            pages = self.merge_pages(pages)
 
         # store path
         name = path_pdf_path.stem
@@ -337,6 +376,46 @@ inheritance.</p>
     return ds</code></pre>
 </details>
 </dd>
+<dt id="pdf2dcm.pdf2rgb.Pdf2RgbSC.merge_pages"><code class="name flex">
+<span>def <span class="ident">merge_pages</span></span>(<span>self, pages: list) ‑> list</span>
+</code></dt>
+<dd>
+<div class="desc"><p>method to horizontally stack the pages of a report</p>
+<h2 id="args">Args</h2>
+<dl>
+<dt><strong><code>pages</code></strong> :&ensp;<code>list</code></dt>
+<dd>list of Pil images that needs to bestacked</dd>
+</dl>
+<h2 id="returns">Returns</h2>
+<dl>
+<dt><code>list</code></dt>
+<dd>list with one element of teh stacked imges</dd>
+</dl></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def merge_pages(self, pages: list) -&gt; list:
+    &#34;&#34;&#34;method to horizontally stack the pages of a report
+
+    Args:
+        pages (list): list of Pil images that needs to bestacked
+
+    Returns:
+        list: list with one element of teh stacked imges
+    &#34;&#34;&#34;
+    widths, heights = zip(*(i.size for i in pages))
+    width = max(widths)
+    height = sum(heights)
+    new_im = Image.new(&#34;RGB&#34;, (width, height))
+    y_offset = 0
+    for im in pages:
+        new_im.paste(im, (0, y_offset))
+        y_offset += im.size[1]
+
+    return [new_im]</code></pre>
+</details>
+</dd>
 <dt id="pdf2dcm.pdf2rgb.Pdf2RgbSC.run"><code class="name flex">
 <span>def <span class="ident">run</span></span>(<span>self, path_pdf: str, path_template_dcm: str = '', suffix: str = '.dcm') ‑> List[pathlib.Path]</span>
 </code></dt>
@@ -394,10 +473,9 @@ repersonalisation of data.</dd>
 
     # pdf pages as images
     pages = convert_from_path(path_pdf_path, dpi=self.dpi)
-    if self.merge_pages:
-        raise NotImplementedError(
-            &#34;Merged Pages DCM Secondary Caputre is not implemented yet&#34;
-        )
+
+    if self.merge_pages_flag:
+        pages = self.merge_pages(pages)
 
     # store path
     name = path_pdf_path.stem
@@ -443,6 +521,7 @@ repersonalisation of data.</dd>
 <h4><code><a title="pdf2dcm.pdf2rgb.Pdf2RgbSC" href="#pdf2dcm.pdf2rgb.Pdf2RgbSC">Pdf2RgbSC</a></code></h4>
 <ul class="">
 <li><code><a title="pdf2dcm.pdf2rgb.Pdf2RgbSC.generate_rgb_sc" href="#pdf2dcm.pdf2rgb.Pdf2RgbSC.generate_rgb_sc">generate_rgb_sc</a></code></li>
+<li><code><a title="pdf2dcm.pdf2rgb.Pdf2RgbSC.merge_pages" href="#pdf2dcm.pdf2rgb.Pdf2RgbSC.merge_pages">merge_pages</a></code></li>
 <li><code><a title="pdf2dcm.pdf2rgb.Pdf2RgbSC.run" href="#pdf2dcm.pdf2rgb.Pdf2RgbSC.run">run</a></code></li>
 </ul>
 </li>
