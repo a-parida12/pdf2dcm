@@ -30,7 +30,23 @@ def test_04_2_generate_rgb_sc(rgbscconverter):
 
 
 @pytest.mark.rgbsc
-def test_04_3_end2end(rgbscconverter):
+def test_04_3_generate_rgb_sc_merge_pages(rgbscconverter):
+    file_meta = rgbscconverter._get_rgbsc_meta()
+    # merge falg true
+    rgbscconverter.merge_pages_flag = True
+    input_pdf_path = "tests/test_data/test_rgb.pdf"
+    images = convert_from_path(input_pdf_path, dpi=144)
+    images = rgbscconverter.merge_pages(images)
+    ds = rgbscconverter.generate_rgb_sc(file_meta, images[0])
+
+    assert type(ds) == FileDataset
+
+    assert len(ds.PixelData) == 11632896
+    assert ds.SOPClassUID == uid.RGB_SC_MEDIA_SOP_CLASS_UID
+
+
+@pytest.mark.rgbsc
+def test_04_4_end2end(rgbscconverter):
     path_pdf = "tests/test_data/test_rgb.pdf"
     ref_dicom = "tests/test_data/CT_small.dcm"
 
@@ -71,4 +87,24 @@ def test_04_3_end2end(rgbscconverter):
     for i, path in enumerate(stored_paths):
         assert str(path) == f"tests/test_data/test_rgb_{i}"
         assert rgbscconverter.check_valid_dcm(path)
+        os.remove(path)
+
+
+@pytest.mark.rgbsc
+def test_04_4_end2end_merge(rgbscconverter):
+    path_pdf = "tests/test_data/test_rgb.pdf"
+
+    # no personalisation
+    rgbscconverter.merge_pages_flag = True
+    stored_paths = rgbscconverter.run(path_pdf)
+
+    # check generation
+    for path in stored_paths:
+        assert os.path.exists(path)
+        assert rgbscconverter.check_valid_dcm(path)
+
+        # check attribute
+        dcm_ds = pydicom.dcmread(path)
+        assert len(dcm_ds.PixelData) == 11632896
+
         os.remove(path)
