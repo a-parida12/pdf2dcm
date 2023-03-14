@@ -42,7 +42,7 @@ class Pdf2RgbSC(BaseConverter):
         Args:
             file_meta (FileMetaDataset): meta information of a dicom
             img (PIL Image): A PIL type rgb image to be stored as RGB SC Dicom
-            frameID (int): integer value of frameID to resutrn pages in single series
+            frameID (int): integer value of frameID to return pages in single series
 
         Returns:
             FileDataset: rgb sc dicom dataset
