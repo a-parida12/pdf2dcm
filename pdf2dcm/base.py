@@ -20,7 +20,6 @@ class BaseConverter(ABC):
             "PatientID",
             "PatientSex",
             "StudyInstanceUID",
-            "SeriesInstanceUID",
         ]
 
     def personalize_dcm(

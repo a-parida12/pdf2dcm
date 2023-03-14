@@ -4,6 +4,7 @@ from pathlib import Path
 from typing import List
 import os
 from pydicom.dataset import FileMetaDataset, FileDataset
+from pydicom.uid import generate_uid
 from pdf2image import convert_from_path
 from copy import deepcopy
 from PIL import Image
@@ -91,6 +92,8 @@ class Pdf2RgbSC(BaseConverter):
         self,
         path_pdf: str,
         path_template_dcm: str = "",
+        output_prefix: str = 'IM-PDF',
+        output_path: str = None,
         suffix: str = ".dcm",
     ) -> List[Path]:
         """Run the complete secondary capture creation procedure on a given a pdf
@@ -99,6 +102,8 @@ class Pdf2RgbSC(BaseConverter):
             path_pdf (str): path of the pdf that needs to be converted
             path_template_dcm (str, optional): path to template for getting the
                                                repersonalisation of data.
+            output_prefix (str, optional): prefix of the output dicom files. Defaults to IM-PDF-{pdf_name}-{InstanceNumber:05d}.
+            output_path (str, optional): path to write the dicom files. Defaults to same directory as path_pdf.
             suffix (str, optional): suffix of the dicom files. Defaults to ".dcm".
 
         Returns:
@@ -108,6 +113,10 @@ class Pdf2RgbSC(BaseConverter):
         # convert to path type
         path_pdf_path = Path(path_pdf)
         path_template_dcm_path = Path(path_template_dcm)
+        if output_path is None:
+            output_path = path_pdf_path.parent
+        else:
+            output_path = Path(output_path)
         dicom_pdf_file_paths = []
 
         # personalisation
@@ -124,15 +133,15 @@ class Pdf2RgbSC(BaseConverter):
         if self.merge_pages_flag:
             pages = self.merge_pages(pages)
 
-        # store path
-        name = path_pdf_path.stem
-        path = path_pdf_path.parent
-
+        seriesUID = generate_uid()
         for idx, page in enumerate(pages):
-            store_dcm_path = Path(os.path.join(path, f"{name}_{idx}{suffix}"))
+            fileNameOut =  f"{output_prefix}-{path_pdf_path.stem}-{idx+1:05d}{suffix}"
+            fileNameOut = fileNameOut.replace(' ', '_')
+            store_dcm_path = Path(os.path.join(output_path, fileNameOut))
             rgb_sc_dcm = self.generate_rgb_sc(rgbsc_meta, page, idx)
             if personalisation:
                 rgb_sc_dcm = self.personalize_dcm(path_template_dcm_path, rgb_sc_dcm)
+            rgb_sc_dcm.SeriesInstanceUID = seriesUID
             dicom_pdf_file_paths.append(self._store_ds(store_dcm_path, rgb_sc_dcm))
 
         return dicom_pdf_file_paths
