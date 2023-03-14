@@ -54,8 +54,8 @@ class Pdf2RgbSC(BaseConverter):
         ds.BitsAllocated = 8
         ds.BitsStored = 8
         ds.HighBit = 7
-        ds.Rows = img.size[0]
-        ds.Columns = img.size[1]
+        ds.Rows = img.size[1]
+        ds.Columns = img.size[0]
         ds.add_new(0x00280006, "US", 0)
 
         ds.PixelData = img.tobytes()
