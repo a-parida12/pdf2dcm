@@ -4,6 +4,7 @@ from pathlib import Path
 from typing import List
 import os
 from pydicom.dataset import FileMetaDataset, FileDataset
+from pydicom.uid import generate_uid
 from pdf2image import convert_from_path
 from copy import deepcopy
 from PIL import Image
@@ -36,12 +37,13 @@ class Pdf2RgbSC(BaseConverter):
         file_meta.ImplementationClassUID = uid.RGB_SC_IMPL_CLASS_UID
         return file_meta
 
-    def generate_rgb_sc(self, file_meta: FileMetaDataset, img) -> FileDataset:
+    def generate_rgb_sc(self, file_meta: FileMetaDataset, img, frameID) -> FileDataset:
         """method to rgb sc pdf byte stream in a dicom
 
         Args:
             file_meta (FileMetaDataset): meta information of a dicom
             img (PIL Image): A PIL type rgb image to be stored as RGB SC Dicom
+            frameID (int): integer value of frameID to return pages in single series
 
         Returns:
             FileDataset: rgb sc dicom dataset
@@ -57,6 +59,7 @@ class Pdf2RgbSC(BaseConverter):
         ds.Rows = img.size[1]
         ds.Columns = img.size[0]
         ds.add_new(0x00280006, "US", 0)
+        ds.InstanceNumber = frameID+1
 
         ds.PixelData = img.tobytes()
         ds.PixelRepresentation = 0
@@ -125,12 +128,14 @@ class Pdf2RgbSC(BaseConverter):
         # store path
         name = path_pdf_path.stem
         path = path_pdf_path.parent
-
+        
+        seriesUID = generate_uid()
         for idx, page in enumerate(pages):
             store_dcm_path = Path(os.path.join(path, f"{name}_{idx}{suffix}"))
-            rgb_sc_dcm = self.generate_rgb_sc(rgbsc_meta, page)
+            rgb_sc_dcm = self.generate_rgb_sc(rgbsc_meta, page, idx)
             if personalisation:
                 rgb_sc_dcm = self.personalize_dcm(path_template_dcm_path, rgb_sc_dcm)
+            rgb_sc_dcm.SeriesInstanceUID = seriesUID
             dicom_pdf_file_paths.append(self._store_ds(store_dcm_path, rgb_sc_dcm))
 
         return dicom_pdf_file_paths
