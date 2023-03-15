@@ -21,6 +21,7 @@ class BaseConverter(ABC):
             "PatientSex",
             "StudyInstanceUID",
             "SeriesInstanceUID",
+            "SOPInstanceUID",
         ]
 
     def personalize_dcm(
@@ -77,7 +78,6 @@ class BaseConverter(ABC):
 
         ds.is_little_endian = True
         ds.is_implicit_VR = False
-        ds.SOPInstanceUID = generate_uid()
 
         # if we want to create the pdf with the pdf creation timing
         dt = datetime.datetime.now()
