@@ -14,11 +14,11 @@ jobs:
       - name: Checkout 🛎️
         uses: actions/checkout@v3
       
-      - name: Python 3.8.5 ✅
+      - name: Python 3.8.15 ✅
         id: setup-python
         uses: actions/setup-python@v4
         with:
-          python-version: 3.8.5
+          python-version: 3.8.15
       
       - name: Poetry ✅
         uses: snok/install-poetry@v1
