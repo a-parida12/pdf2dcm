@@ -22,10 +22,12 @@ def test_04_2_generate_rgb_sc(rgbscconverter):
     file_meta = rgbscconverter._get_rgbsc_meta()
     input_pdf_path = "tests/test_data/test_rgb.pdf"
     images = convert_from_path(input_pdf_path, dpi=144)
-    ds = rgbscconverter.generate_rgb_sc(file_meta, images[0])
+    instance = 1
+    ds = rgbscconverter.generate_rgb_sc(file_meta, images[0], instance)
 
     assert type(ds) == FileDataset
     assert len(ds.PixelData) == 5816448
+    assert ds.InstanceNumber == instance
     assert ds.SOPClassUID == uid.RGB_SC_MEDIA_SOP_CLASS_UID
 
 
@@ -37,10 +39,10 @@ def test_04_3_generate_rgb_sc_merge_pages(rgbscconverter):
     input_pdf_path = "tests/test_data/test_rgb.pdf"
     images = convert_from_path(input_pdf_path, dpi=144)
     images = rgbscconverter.merge_pages(images)
-    ds = rgbscconverter.generate_rgb_sc(file_meta, images[0])
+    instance = 1
+    ds = rgbscconverter.generate_rgb_sc(file_meta, images[0], instance)
 
     assert type(ds) == FileDataset
-
     assert len(ds.PixelData) == 11632896
     assert ds.SOPClassUID == uid.RGB_SC_MEDIA_SOP_CLASS_UID
 
@@ -85,7 +87,7 @@ def test_04_4_end2end(rgbscconverter):
     stored_paths = rgbscconverter.run(path_pdf, ref_dicom, suffix="")
 
     for i, path in enumerate(stored_paths):
-        assert str(path) == f"tests/test_data/test_rgb_{i}"
+        assert str(path) == f"tests/test_data/test_rgb_{i+1}"
         assert rgbscconverter.check_valid_dcm(path)
         os.remove(path)
 

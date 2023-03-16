@@ -37,7 +37,9 @@ class Pdf2RgbSC(BaseConverter):
         file_meta.ImplementationClassUID = uid.RGB_SC_IMPL_CLASS_UID
         return file_meta
 
-    def generate_rgb_sc(self, file_meta: FileMetaDataset, img, frameID) -> FileDataset:
+    def generate_rgb_sc(
+        self, file_meta: FileMetaDataset, img: Image, frameID: int
+    ) -> FileDataset:
         """method to rgb sc pdf byte stream in a dicom
 
         Args:
@@ -59,7 +61,7 @@ class Pdf2RgbSC(BaseConverter):
         ds.Rows = img.size[1]
         ds.Columns = img.size[0]
         ds.add_new(0x00280006, "US", 0)
-        ds.InstanceNumber = frameID+1
+        ds.InstanceNumber = frameID
 
         ds.PixelData = img.tobytes()
         ds.PixelRepresentation = 0
@@ -128,11 +130,11 @@ class Pdf2RgbSC(BaseConverter):
         # store path
         name = path_pdf_path.stem
         path = path_pdf_path.parent
-        
+
         seriesUID = generate_uid()
         for idx, page in enumerate(pages):
-            store_dcm_path = Path(os.path.join(path, f"{name}_{idx}{suffix}"))
-            rgb_sc_dcm = self.generate_rgb_sc(rgbsc_meta, page, idx)
+            store_dcm_path = Path(os.path.join(path, f"{name}_{idx+1}{suffix}"))
+            rgb_sc_dcm = self.generate_rgb_sc(rgbsc_meta, page, idx + 1)
             if personalisation:
                 rgb_sc_dcm = self.personalize_dcm(path_template_dcm_path, rgb_sc_dcm)
             rgb_sc_dcm.SeriesInstanceUID = seriesUID
