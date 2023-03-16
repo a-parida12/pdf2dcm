@@ -2,6 +2,10 @@
 
 <!--next-version-placeholder-->
 
+## v0.4.1 (2023-03-16)
+### Fix
+* **personalization:** Removed non dicom standard UID generation ([`db9eae8`](https://github.com/a-parida12/pdf2dcm/commit/db9eae87a48b98a43b5f95884adad0854c7d16ed))
+
 ## v0.4.0 (2022-10-17)
 ### Feature
 * **Pdf2RgbSC:** Allow for merging files ([#30](https://github.com/a-parida12/pdf2dcm/issues/30)) ([`7585fc3`](https://github.com/a-parida12/pdf2dcm/commit/7585fc3245cd6fa3e2c0b90a722a5e410324ed48))
