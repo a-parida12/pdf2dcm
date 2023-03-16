@@ -99,5 +99,7 @@ It is the process of copying over data regarding the identity of the encapsualte
 - PatientID
 - PatientSex
 - StudyInstanceUID
-- SeriesInstanceUID
-- SOPInstanceUID
+- ~~SeriesInstanceUID~~
+- ~~SOPInstanceUID~~
+
+The fields `SeriesInstanceUID` and `SOPInstanceUID` have been removed from the repersonalization by copying as it violates the DICOM standards.
