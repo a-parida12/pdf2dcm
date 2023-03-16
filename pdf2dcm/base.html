@@ -48,8 +48,6 @@ class BaseConverter(ABC):
             &#34;PatientID&#34;,
             &#34;PatientSex&#34;,
             &#34;StudyInstanceUID&#34;,
-            &#34;SeriesInstanceUID&#34;,
-            &#34;SOPInstanceUID&#34;,
         ]
 
     def personalize_dcm(
@@ -106,6 +104,7 @@ class BaseConverter(ABC):
 
         ds.is_little_endian = True
         ds.is_implicit_VR = False
+        ds.SOPInstanceUID = generate_uid()
 
         # if we want to create the pdf with the pdf creation timing
         dt = datetime.datetime.now()
@@ -180,8 +179,6 @@ inheritance.</p></div>
             &#34;PatientID&#34;,
             &#34;PatientSex&#34;,
             &#34;StudyInstanceUID&#34;,
-            &#34;SeriesInstanceUID&#34;,
-            &#34;SOPInstanceUID&#34;,
         ]
 
     def personalize_dcm(
@@ -238,6 +235,7 @@ inheritance.</p></div>
 
         ds.is_little_endian = True
         ds.is_implicit_VR = False
+        ds.SOPInstanceUID = generate_uid()
 
         # if we want to create the pdf with the pdf creation timing
         dt = datetime.datetime.now()
