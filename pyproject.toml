@@ -5,23 +5,26 @@ description = "A PDF to Dicom Converter"
 authors = ["Abhijeet Parida <abhijeet.parida@tum.de>"]
 license = "MIT"
 repository = 'https://github.com/a-parida12/pdf2dcm'
+homepage = "https://a-parida12.github.io/pdf2dcm/pdf2dcm/"
 readme = 'README.md'
 keywords = ["dicom", "pdf", "pdf2dcm",  "pdf2dicom", "pydicom", "pdf2dicomRGB"]
 
 [tool.poetry.dependencies]
 python = "^3.8"
-pydicom = "^2.2.2"
-pdf2image = "^1.16.0"
-pillow = "^9.2.0"
+pydicom = "^2.3.0"
+pillow = "^9.5.0"
+pdf2image = "^1.16.3"
 
-[tool.poetry.dev-dependencies]
-pytest = "^6.2.5"
+
+[tool.poetry.group.dev.dependencies]
+pytest = "^7.3.1"
 flake8 = "^4.0.1"
-pytest-cov = "^3.0.0"
-commitizen = "^2.20.3"
-bandit = "^1.7.1"
-pre-commit = "^2.17.0"
+commitizen = "^3.2.1"
+bandit = "^1.7.5"
 pdoc3 = "^0.10.0"
+pre-commit = "^3.3.1"
+pytest-cov = "^4.0.0"
+
 
 [build-system]
 requires = ["poetry-core>=1.0.0"]
