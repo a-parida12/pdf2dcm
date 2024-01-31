@@ -35,9 +35,13 @@ from pydicom.dataset import FileMetaDataset, FileDataset
 
 
 class Pdf2EncapsDCM(BaseConverter):
-    def __init__(self):
-        &#34;&#34;&#34;Class for Encapsulated PDF generation&#34;&#34;&#34;
-        super().__init__()
+    def __init__(self, repersonalisation_fields=[]):
+        &#34;&#34;&#34;Class for Encapsulated PDF generation
+        
+        Args:
+            repersonalisation_fields (List&lt;String&gt;, optional): fields to be copied to the new image
+        &#34;&#34;&#34;
+        super().__init__(repersonalisation_fields=repersonalisation_fields)
 
     def _get_encapspdf_meta(self) -&gt; FileMetaDataset:
         &#34;&#34;&#34;Get and set the file meta information for the pdf encaps dicom
@@ -129,19 +133,26 @@ class Pdf2EncapsDCM(BaseConverter):
 <dl>
 <dt id="pdf2dcm.pdf2encaps.Pdf2EncapsDCM"><code class="flex name class">
 <span>class <span class="ident">Pdf2EncapsDCM</span></span>
+<span>(</span><span>repersonalisation_fields=[])</span>
 </code></dt>
 <dd>
 <div class="desc"><p>Helper class that provides a standard way to create an ABC using
 inheritance.</p>
-<p>Class for Encapsulated PDF generation</p></div>
+<p>Class for Encapsulated PDF generation</p>
+<h2 id="args">Args</h2>
+<p>repersonalisation_fields (List<String>, optional): fields to be copied to the new image</p></div>
 <details class="source">
 <summary>
 <span>Expand source code</span>
 </summary>
 <pre><code class="python">class Pdf2EncapsDCM(BaseConverter):
-    def __init__(self):
-        &#34;&#34;&#34;Class for Encapsulated PDF generation&#34;&#34;&#34;
-        super().__init__()
+    def __init__(self, repersonalisation_fields=[]):
+        &#34;&#34;&#34;Class for Encapsulated PDF generation
+        
+        Args:
+            repersonalisation_fields (List&lt;String&gt;, optional): fields to be copied to the new image
+        &#34;&#34;&#34;
+        super().__init__(repersonalisation_fields=repersonalisation_fields)
 
     def _get_encapspdf_meta(self) -&gt; FileMetaDataset:
         &#34;&#34;&#34;Get and set the file meta information for the pdf encaps dicom

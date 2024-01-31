@@ -42,13 +42,16 @@ import warnings
 
 
 class BaseConverter(ABC):
-    def __init__(self):
-        self.repersonalisation_fields = [
-            &#34;PatientName&#34;,
-            &#34;PatientID&#34;,
-            &#34;PatientSex&#34;,
-            &#34;StudyInstanceUID&#34;,
-        ]
+    def __init__(self, repersonalisation_fields=[]):
+        if len(repersonalisation_fields):
+            self.repersonalisation_fields = repersonalisation_fields
+        else:
+            self.repersonalisation_fields = [
+                &#34;PatientName&#34;,
+                &#34;PatientID&#34;,
+                &#34;PatientSex&#34;,
+                &#34;StudyInstanceUID&#34;,
+            ]
 
     def personalize_dcm(
         self, template_dcm_path: Path, pdf_dcm: FileDataset
@@ -164,6 +167,7 @@ class BaseConverter(ABC):
 <dl>
 <dt id="pdf2dcm.base.BaseConverter"><code class="flex name class">
 <span>class <span class="ident">BaseConverter</span></span>
+<span>(</span><span>repersonalisation_fields=[])</span>
 </code></dt>
 <dd>
 <div class="desc"><p>Helper class that provides a standard way to create an ABC using
@@ -173,13 +177,16 @@ inheritance.</p></div>
 <span>Expand source code</span>
 </summary>
 <pre><code class="python">class BaseConverter(ABC):
-    def __init__(self):
-        self.repersonalisation_fields = [
-            &#34;PatientName&#34;,
-            &#34;PatientID&#34;,
-            &#34;PatientSex&#34;,
-            &#34;StudyInstanceUID&#34;,
-        ]
+    def __init__(self, repersonalisation_fields=[]):
+        if len(repersonalisation_fields):
+            self.repersonalisation_fields = repersonalisation_fields
+        else:
+            self.repersonalisation_fields = [
+                &#34;PatientName&#34;,
+                &#34;PatientID&#34;,
+                &#34;PatientSex&#34;,
+                &#34;StudyInstanceUID&#34;,
+            ]
 
     def personalize_dcm(
         self, template_dcm_path: Path, pdf_dcm: FileDataset
