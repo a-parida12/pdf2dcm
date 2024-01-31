@@ -14,13 +14,16 @@ import warnings
 
 
 class BaseConverter(ABC):
-    def __init__(self):
-        self.repersonalisation_fields = [
-            "PatientName",
-            "PatientID",
-            "PatientSex",
-            "StudyInstanceUID",
-        ]
+    def __init__(self, repersonalisation_fields=[]):
+        if len(repersonalisation_fields):
+            self.repersonalisation_fields = repersonalisation_fields
+        else:
+            self.repersonalisation_fields = [
+                "PatientName",
+                "PatientID",
+                "PatientSex",
+                "StudyInstanceUID",
+            ]
 
     def personalize_dcm(
         self, template_dcm_path: Path, pdf_dcm: FileDataset

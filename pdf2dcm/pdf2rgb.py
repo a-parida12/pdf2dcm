@@ -11,16 +11,18 @@ from PIL import Image
 
 
 class Pdf2RgbSC(BaseConverter):
-    def __init__(self, dpi=144, merge_pages=False):
+    def __init__(self, dpi=144, merge_pages=False, repersonalisation_fields=[]):
         """Class for the generation RGB Secondary capture
 
         Args:
             dpi (int, optional): dots per inch, set resolution of the image. Defaults to 144.
             merge_pages (bool, optional): multiple pgs must be put into 1 dicom. Defaults to False.
+            repersonalisation_fields (List<String>, optional): fields to be copied to the new image
+
         """
         self.merge_pages_flag = merge_pages
         self.dpi = dpi
-        super().__init__()
+        super().__init__(repersonalisation_fields=repersonalisation_fields)
 
     def _get_rgbsc_meta(self) -> FileMetaDataset:
         """Get and set the file meta information for the rgb secondary capture dicom

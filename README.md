@@ -93,7 +93,7 @@ Returns:
 
 ## Repersonalisation
 
-It is the process of copying over data regarding the identity of the encapsualted pdf from a template dicom. Currently, the fileds that are repersonalised are-
+It is the process of copying over data regarding the identity of the encapsualted pdf from a template dicom. Currently, the fields that are repersonalised by default are-
 
 - PatientName
 - PatientID
@@ -103,3 +103,20 @@ It is the process of copying over data regarding the identity of the encapsualte
 - ~~SOPInstanceUID~~
 
 The fields `SeriesInstanceUID` and `SOPInstanceUID` have been removed from the repersonalization by copying as it violates the DICOM standards.
+
+You can set the fields to repersonalize by passing repersonalisation_fields into `Pdf2EncapsDCM()`, or `Pdf2RgbSC()`
+
+Example:
+
+```python
+fields = [
+    "PatientName",
+    "PatientID",
+    "PatientSex",
+    "StudyInstanceUID",
+    "AccessionNumber"
+]
+converter = Pdf2RgbSC(repersonalisation_fields=fields)
+```
+
+note: this will overwrite the default fields.
