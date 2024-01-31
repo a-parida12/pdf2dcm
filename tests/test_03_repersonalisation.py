@@ -71,3 +71,26 @@ def test_03_2_name_missing(pdfencapsconverter):
     assert dcm_ds.PatientName == ""
 
     os.remove(stored_path)
+
+@pytest.mark.reperson
+def test_03_4_additional_fields_personlisation(pdfrepersonconverter):
+    path_pdf = "tests/test_data/test_file.pdf"
+    ref_dicom = "tests/test_data/CT_small_accession_number.dcm"
+
+    # with personalisation
+    stored_path = pdfrepersonconverter.run(path_pdf, ref_dicom)[0]
+
+    assert os.path.exists(stored_path)
+    assert pdfrepersonconverter.check_valid_dcm(stored_path)
+
+    dcm_ds = pydicom.dcmread(stored_path)
+    ref_dcm_ds = pydicom.dcmread(ref_dicom)
+
+    # check repersonaliation attribute
+    assert len(dcm_ds.EncapsulatedDocument) == 898332
+    assert dcm_ds.PatientName == ref_dcm_ds.PatientName
+    assert dcm_ds.PatientID == ref_dcm_ds.PatientID
+    assert dcm_ds.PatientSex == ref_dcm_ds.PatientSex
+    assert dcm_ds.AccessionNumber == ref_dcm_ds.AccessionNumber
+
+    os.remove(stored_path)

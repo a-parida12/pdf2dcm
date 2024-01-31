@@ -23,3 +23,13 @@ def pdfencapsconverter():
 @pytest.fixture
 def rgbscconverter():
     yield Pdf2RgbSC()
+
+@pytest.fixture
+def pdfrepersonconverter():
+    yield Pdf2EncapsDCM(repersonalisation_fields=[
+        "PatientName",
+        "PatientID",
+        "PatientSex",
+        "StudyInstanceUID",
+        "AccessionNumber"
+    ])
