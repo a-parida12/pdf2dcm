@@ -1,6 +1,50 @@
 # CHANGELOG
 
 
+## v0.5.2 (2025-03-24)
+
+### Bug Fixes
+
+- **version**: Sync version in prints
+  ([`67fe736`](https://github.com/a-parida12/pdf2dcm/commit/67fe7368cf4c98bd396ef48b46c845612a3336d4))
+
+* Create SECURITY.md (#67)
+
+* build(deps-dev): bump jinja2 from 3.1.4 to 3.1.5 (#68)
+
+Bumps [jinja2](https://github.com/pallets/jinja) from 3.1.4 to 3.1.5. - [Release
+  notes](https://github.com/pallets/jinja/releases) -
+  [Changelog](https://github.com/pallets/jinja/blob/main/CHANGES.rst) -
+  [Commits](https://github.com/pallets/jinja/compare/3.1.4...3.1.5)
+
+--- updated-dependencies: - dependency-name: jinja2 dependency-type: indirect
+
+...
+
+* docs(license): update copyright year(s) (#69)
+
+* build(deps-dev): bump virtualenv from 20.23.0 to 20.26.6 (#70)
+
+Bumps [virtualenv](https://github.com/pypa/virtualenv) from 20.23.0 to 20.26.6. - [Release
+  notes](https://github.com/pypa/virtualenv/releases) -
+  [Changelog](https://github.com/pypa/virtualenv/blob/main/docs/changelog.rst) -
+  [Commits](https://github.com/pypa/virtualenv/compare/20.23.0...20.26.6)
+
+--- updated-dependencies: - dependency-name: virtualenv dependency-type: indirect
+
+* fix(version): sync version in prints
+
+fixes #66
+
+---------
+
+Signed-off-by: dependabot[bot] <support@github.com>
+
+Co-authored-by: dependabot[bot] <49699333+dependabot[bot]@users.noreply.github.com>
+
+Co-authored-by: github-actions <github-actions@github.com>
+
+
 ## v0.5.1 (2025-03-24)
 
 ### Bug Fixes
