@@ -1,6 +1,6 @@
 [tool.poetry]
 name = "pdf2dcm"
-version = "0.5.0"
+version = "0.5.2"
 description = "A PDF to Dicom Converter"
 authors = ["Abhijeet Parida <abhijeet.parida@tum.de>"]
 license = "MIT"
