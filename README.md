@@ -49,6 +49,11 @@ brew install poppler
 
 ## PDF to Encapsulated DCM
 
+Stores the original PDF directly inside a DICOM object. This is useful for:
+
+- Radiology or pathology or any structured clinical documents
+- PACS archival workflows
+
 ### Usage
 
 ```python
@@ -63,7 +68,7 @@ print(converted_dcm)
 Parameters `converter.run`:
 
 - `path_pdf (str)`: path of the pdf that needs to be encapsulated
-- `path_template_dcm (str, optional)`: path to template for getting the repersonalisation of data.
+- `path_template_dcm (str, optional)`: Optional template DICOM used for metadata inheritance.
 - `suffix (str, optional)`: suffix of the dicom files. Defaults to ".dcm".
 
 Returns:
@@ -71,6 +76,12 @@ Returns:
 - `List[Path]`: list of path of the stored encapsulated dcm
 
 ## PDF to RGB Secondary Capture DCM
+
+Renders PDF pages as RGB images and stores them as Secondary Capture DICOM instances. Useful when:
+
+- Encapsulated PDFs are unsupported
+- Image-based viewing is preferred
+- Legacy PACS compatibility is required
 
 ### Usage
 
@@ -86,7 +97,7 @@ print(converted_dcm)
 Parameters `converter.run`:
 
 - `path_pdf (str)`: path of the pdf that needs to be converted
-- `path_template_dcm (str, optional)`: path to template for getting the repersonalisation of data.
+- `path_template_dcm (str, optional)`: Optional template DICOM used for metadata inheritance.
 - `suffix (str, optional)`: suffix of the dicom files. Defaults to ".dcm".
 
 Returns:
@@ -94,13 +105,13 @@ Returns:
 - `List[Path]`: list of paths of the stored secondary capture dcm
 ## Notes
 
-- The name of the output dicom is same as the name of the input pdf
+- Output DICOM filenames are derived from the input PDF filename.
 - If no template is provided no repersonalisation takes place
 - It is possible to produce dicoms without a suffix by simply passing `suffix=""` to the `converter.run()`
 
-## Repersonalisation
+## Metadata Inheritance
 
-It is the process of copying over data regarding the identity of the encapsualted pdf from a template dicom. Currently, the fields that are repersonalised by default are-
+Metadata can optionally be copied from a template DICOM file to preserve patient and study context. Currently, the fields that is inherited by default are-
 
 - PatientName
 - PatientID
@@ -109,7 +120,7 @@ It is the process of copying over data regarding the identity of the encapsualte
 - ~~SeriesInstanceUID~~
 - ~~SOPInstanceUID~~
 
-The fields `SeriesInstanceUID` and `SOPInstanceUID` have been removed from the repersonalization by copying as it violates the DICOM standards.
+The fields `SeriesInstanceUID` and `SOPInstanceUID` have been removed from the inheritance by copying as it violates the DICOM standards.
 
 You can set the fields to repersonalize by passing repersonalisation_fields into `Pdf2EncapsDCM()`, or `Pdf2RgbSC()`
 
