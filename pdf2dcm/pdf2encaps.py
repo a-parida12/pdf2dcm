@@ -1,3 +1,15 @@
+"""Encapsulate a PDF into a DICOM file.
+
+The module exposes :class:`Pdf2EncapsDCM`, which converts a PDF into an
+encapsulated DICOM document.
+
+Example:
+    from pdf2dcm import Pdf2EncapsDCM
+
+    converter = Pdf2EncapsDCM()
+    converter.run("example.pdf")
+"""
+
 from .base import BaseConverter
 from .utils import uid
 from pathlib import Path

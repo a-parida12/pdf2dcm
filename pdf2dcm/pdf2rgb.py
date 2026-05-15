@@ -1,3 +1,15 @@
+"""Generate RGB secondary capture DICOM files from a PDF.
+
+The module exposes :class:`Pdf2RgbSC`, which renders PDF pages to images and
+stores them as RGB secondary capture DICOM objects.
+
+Example:
+    from pdf2dcm import Pdf2RgbSC
+
+    converter = Pdf2RgbSC()
+    converter.run("example.pdf")
+"""
+
 from .base import BaseConverter
 from .utils import uid
 from pathlib import Path
