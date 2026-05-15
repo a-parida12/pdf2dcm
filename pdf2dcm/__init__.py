@@ -1,5 +1,4 @@
-"""pdf2dcm.
-
+"""
 Convert PDF files into DICOM objects.
 
 Examples:

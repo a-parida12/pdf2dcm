@@ -4,6 +4,7 @@ The module exposes :class:`Pdf2RgbSC`, which renders PDF pages to images and
 stores them as RGB secondary capture DICOM objects.
 
 Example:
+
     from pdf2dcm import Pdf2RgbSC
 
     converter = Pdf2RgbSC()

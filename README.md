@@ -4,7 +4,14 @@
 
 PDF to DICOM Converter
 
-> A python package for PDF to Encapsulated DCM and PDF to DICOM RGB converter
+> Convert PDFs into standards-compliant DICOM files for PACS, radiology, and healthcare interoperability workflows.
+
+## Features
+
+- Convert PDFs to Encapsulated DICOM or RGB Secondary Capture DICOM
+- Preserve patient/study metadata from template DICOMs
+- Simple Python API built on pydicom
+- Compatible with PACS workflows
 
 ## SETUP
 
