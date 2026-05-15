@@ -1,6 +1,6 @@
 from pathlib import Path
 import pydicom
-from pydicom.dataset import FileMetaDataset, FileDataset
+from pydicom.dataset import FileMetaDataset, FileDataset, validate_file_meta
 from pydicom.errors import InvalidDicomError
 from abc import ABC, abstractmethod
 
@@ -102,8 +102,8 @@ class BaseConverter(ABC):
         Returns:
             [Path]: output storage path for the pdf dicom
         """
-        ds.fix_meta_info()
-        ds.save_as(store_path)
+        validate_file_meta(ds.file_meta)
+        ds.save_as(store_path, enforce_file_format=True)
         return store_path
 
     @staticmethod

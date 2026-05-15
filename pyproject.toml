@@ -10,20 +10,21 @@ readme = 'README.md'
 keywords = ["dicom", "pdf", "pdf2dcm",  "pdf2dicom", "pydicom", "pdf2dicomRGB"]
 
 [tool.poetry.dependencies]
-python = "^3.8"
-pydicom = "^2.3.0"
-pillow = ">=9.5,<11.0"
-pdf2image = "^1.16.3"
+python = ">=3.10,<4.0"
+pydicom = "3.0.2"
+pillow = "12.2.0"
+pdf2image = "1.17.0"
 
 
 [tool.poetry.group.dev.dependencies]
-pytest = "^7.3.1"
-flake8 = "^4.0.1"
-commitizen = "^3.2.1"
-bandit = "^1.7.5"
-pre-commit = "^3.3.1"
-pytest-cov = "^4.0.0"
-pdoc = "^14.0.0"
+pytest = "9.0.3"
+flake8 = "7.3.0"
+commitizen = "4.16.2"
+bandit = "1.9.4"
+pre-commit = "4.6.0"
+pytest-cov = "7.1.0"
+pdoc = "16.0.0"
+pyyaml = "6.0.3"
 
 
 [build-system]
