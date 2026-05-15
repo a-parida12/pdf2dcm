@@ -79,8 +79,8 @@ jobs:
 
       - name: Code coverage summary report
         run: |
-          coverage report --fail-under=90 -m
-          coverage html
+          poetry run coverage report --fail-under=90 -m
+          poetry run coverage html
 
       - name: Archive code coverage html report
         uses: actions/upload-artifact@v4
