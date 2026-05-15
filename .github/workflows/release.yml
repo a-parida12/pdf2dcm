@@ -1,68 +1,73 @@
-name: Test and Release
+name: Test and Release 
 on:
   push:
-    branches: [main]
+    branches: [ main ]
 
-env:
-  PYTHON_VERSION: "3.8.15"
-
+permissions:
+  contents: write
+  pull-requests: write
+  packages: write
+  
 jobs:
-  quality:
+  Quality:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v4
-      - uses: actions/setup-python@v4
-        with:
-          python-version: ${{ env.PYTHON_VERSION }}
+    - uses: actions/checkout@v4
+    - uses: actions/setup-python@v4
+      with:
+        python-version: "3.10"
 
-      - name: Install dependencies
-        run: |
-          sudo apt-get install poppler-utils
-          python -m pip install --upgrade pip
-          pip install poetry
-          poetry install
+    - name: Configure poetry & Install dependencies
+      run: |
+       sudo apt-get install poppler-utils
+       python -m pip install --upgrade pip
+       pip install poetry && poetry install
+    
+    - name: View poetry version
+      run: poetry --version
+    
+    - name: Lint with flake8
+      run: |
+        # stop the build if there are Python syntax errors or undefined names
+        poetry run flake8 . --count --select=E9,F63,F7,F82 --show-source --statistics
+        # exit-zero treats all errors as warnings. The GitHub editor is 127 chars wide
+        poetry run flake8 . --count --exit-zero --max-complexity=10 --max-line-length=127 --statistics
+    
+    - name: Security Analysis with bandit
+      run: |
+        # stop pipeline if level 3 vulnerability found
+        poetry run bandit -r -lll ./pdf2dcm ./tests
 
-      - name: Lint with flake8
-        run: |
-          # stop the build if there are Python syntax errors or undefined names
-          poetry run flake8 . --count --select=E9,F63,F7,F82 --show-source --statistics
-          # exit-zero treats all errors as warnings. The GitHub editor is 127 chars wide
-          poetry run flake8 . --count --exit-zero --max-complexity=10 --max-line-length=127 --statistics
+    - name: Test with pytest
+      run: |
+        poetry run pytest -v tests --cov=./pdf2dcm --cov-report=xml
 
-      - name: Security analysis with bandit
-        run: |
-          # stop pipeline if level 3 vulnerability found
-          poetry run bandit -r -lll ./pdf2dcm ./tests
 
-      - name: Test with pytest
-        run: |
-          poetry run pytest -v tests --cov=./pdf2dcm --cov-report=xml
-
-      - name: Upload coverage to Codecov
-        uses: codecov/codecov-action@v5
-        with:
-          token: ${{ secrets.CODECOV_TOKEN }}
-          directory: ./coverage/reports/
-          fail_ci_if_error: true
-          files: ./coverage.xml,./coverage1.xml,./coverage2.xml
-          flags: pytest
-          name: codecov-umbrella
-          verbose: true
-
-  release:
-    needs: quality
+    - name: Upload coverage to Codecov
+      uses: codecov/codecov-action@v5
+      with:
+        token: ${{ secrets.CODECOV_TOKEN }}
+        directory: ./coverage/reports/
+        fail_ci_if_error: true
+        files: ./coverage.xml,./coverage1.xml,./coverage2.xml
+        flags: pytest
+        name: codecov-umbrella
+        verbose: true
+    
+  Release:
+    needs: Quality
     # https://github.community/t/how-do-i-specify-job-dependency-running-in-another-workflow/16482
     if: github.event_name == 'push' && github.ref == 'refs/heads/main' && !contains(github.event.head_commit.message, 'chore(release):')
     runs-on: ubuntu-latest
     steps:
+      - uses: actions/setup-python@v4
+        with:
+          python-version: 3.10
       - name: Checkout code
         uses: actions/checkout@v4
         with:
           fetch-depth: 0
           token: ${{ secrets.GH_TOKEN }}
-      - uses: actions/setup-python@v4
-        with:
-          python-version: ${{ env.PYTHON_VERSION }}
       - name: Python Semantic Release
         uses: python-semantic-release/python-semantic-release@v9.15.0
         with:
