@@ -1,6 +1,37 @@
 # CHANGELOG
 
 
+## v0.6.1 (2026-07-22)
+
+### Bug Fixes
+
+- Remove Dataset.is_little_endian/is_implicit_VR removed in pydicom 3
+  ([#84](https://github.com/a-parida12/pdf2dcm/pull/84),
+  [`804d0fe`](https://github.com/a-parida12/pdf2dcm/commit/804d0fe0513b8da2bf134cae30bfd6d092e394fd))
+
+### Continuous Integration
+
+- **release**: Add permissions and fix token config — closes #82
+  ([`40fcd42`](https://github.com/a-parida12/pdf2dcm/commit/40fcd427f54180e821ea63a49883b134cd62d3b5))
+
+* docs(info): update info on the app
+
+* docs(README): fix grammar
+
+* ci(release): add permissions and fix token config — closes #82
+
+- **release**: Configure git auth for semantic-release to avoid interactive prompts
+  ([`a3de3bb`](https://github.com/a-parida12/pdf2dcm/commit/a3de3bb94fed629d61a406c363a86a70577e9cbd))
+
+- **release**: Quote Python version to fix YAML parsing - 3.10 being parsed as 3.1
+  ([`aeb290a`](https://github.com/a-parida12/pdf2dcm/commit/aeb290a256935a2e10aa20cdeb775732953245b6))
+
+- **release**: Use GITHUB_TOKEN and fix step order
+  ([`3746424`](https://github.com/a-parida12/pdf2dcm/commit/374642405d4db220a30340c92dea74c442964107))
+
+- Move checkout step before setup-python - This fixes 'could not read Username' authentication error
+
+
 ## v0.6.0 (2026-05-15)
 
 ### Build System
