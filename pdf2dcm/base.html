@@ -72,7 +72,7 @@
 </span><span id="L-4"><a href="#L-4"><span class="linenos">  4</span></a><span class="kn">from</span><span class="w"> </span><span class="nn">pydicom.errors</span><span class="w"> </span><span class="kn">import</span> <span class="n">InvalidDicomError</span>
 </span><span id="L-5"><a href="#L-5"><span class="linenos">  5</span></a><span class="kn">from</span><span class="w"> </span><span class="nn">abc</span><span class="w"> </span><span class="kn">import</span> <span class="n">ABC</span><span class="p">,</span> <span class="n">abstractmethod</span>
 </span><span id="L-6"><a href="#L-6"><span class="linenos">  6</span></a>
-</span><span id="L-7"><a href="#L-7"><span class="linenos">  7</span></a><span class="kn">from</span><span class="w"> </span><span class="nn">pydicom.uid</span><span class="w"> </span><span class="kn">import</span> <span class="n">generate_uid</span>
+</span><span id="L-7"><a href="#L-7"><span class="linenos">  7</span></a><span class="kn">from</span><span class="w"> </span><span class="nn">pydicom.uid</span><span class="w"> </span><span class="kn">import</span> <span class="n">generate_uid</span><span class="p">,</span> <span class="n">ExplicitVRLittleEndian</span>
 </span><span id="L-8"><a href="#L-8"><span class="linenos">  8</span></a>
 </span><span id="L-9"><a href="#L-9"><span class="linenos">  9</span></a><span class="kn">import</span><span class="w"> </span><span class="nn">tempfile</span>
 </span><span id="L-10"><a href="#L-10"><span class="linenos"> 10</span></a><span class="kn">from</span><span class="w"> </span><span class="nn">typing</span><span class="w"> </span><span class="kn">import</span> <span class="n">List</span>
@@ -126,74 +126,70 @@
 </span><span id="L-58"><a href="#L-58"><span class="linenos"> 58</span></a>
 </span><span id="L-59"><a href="#L-59"><span class="linenos"> 59</span></a>        <span class="n">file_meta</span> <span class="o">=</span> <span class="n">FileMetaDataset</span><span class="p">()</span>
 </span><span id="L-60"><a href="#L-60"><span class="linenos"> 60</span></a>        <span class="n">file_meta</span><span class="o">.</span><span class="n">FileMetaInformationVersion</span> <span class="o">=</span> <span class="sa">b</span><span class="s2">&quot;</span><span class="se">\x00\x01</span><span class="s2">&quot;</span>
-</span><span id="L-61"><a href="#L-61"><span class="linenos"> 61</span></a>        <span class="n">file_meta</span><span class="o">.</span><span class="n">TransferSyntaxUID</span> <span class="o">=</span> <span class="p">(</span>
-</span><span id="L-62"><a href="#L-62"><span class="linenos"> 62</span></a>            <span class="s2">&quot;1.2.840.10008.1.2.1&quot;</span>  <span class="c1"># std transfer uid little endian, implicit vr</span>
-</span><span id="L-63"><a href="#L-63"><span class="linenos"> 63</span></a>        <span class="p">)</span>
-</span><span id="L-64"><a href="#L-64"><span class="linenos"> 64</span></a>        <span class="n">file_meta</span><span class="o">.</span><span class="n">ImplementationVersionName</span> <span class="o">=</span> <span class="s2">&quot;pdf2dcm&quot;</span>
-</span><span id="L-65"><a href="#L-65"><span class="linenos"> 65</span></a>        <span class="k">return</span> <span class="n">file_meta</span>
-</span><span id="L-66"><a href="#L-66"><span class="linenos"> 66</span></a>
-</span><span id="L-67"><a href="#L-67"><span class="linenos"> 67</span></a>    <span class="nd">@staticmethod</span>
-</span><span id="L-68"><a href="#L-68"><span class="linenos"> 68</span></a>    <span class="k">def</span><span class="w"> </span><span class="nf">_get_dicom_body</span><span class="p">(</span><span class="n">meta</span><span class="p">:</span> <span class="n">FileMetaDataset</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">FileDataset</span><span class="p">:</span>
-</span><span id="L-69"><a href="#L-69"><span class="linenos"> 69</span></a><span class="w">        </span><span class="sd">&quot;&quot;&quot;Creates a temporary file as part of the DICOM PDF creation process</span>
-</span><span id="L-70"><a href="#L-70"><span class="linenos"> 70</span></a>
-</span><span id="L-71"><a href="#L-71"><span class="linenos"> 71</span></a><span class="sd">        Args:</span>
-</span><span id="L-72"><a href="#L-72"><span class="linenos"> 72</span></a><span class="sd">            meta (FileMetaDataset): the meta information of the dicom file</span>
-</span><span id="L-73"><a href="#L-73"><span class="linenos"> 73</span></a>
-</span><span id="L-74"><a href="#L-74"><span class="linenos"> 74</span></a><span class="sd">        Returns:</span>
-</span><span id="L-75"><a href="#L-75"><span class="linenos"> 75</span></a><span class="sd">            FileDataset: dicom file body information</span>
-</span><span id="L-76"><a href="#L-76"><span class="linenos"> 76</span></a><span class="sd">        &quot;&quot;&quot;</span>
-</span><span id="L-77"><a href="#L-77"><span class="linenos"> 77</span></a>        <span class="n">filename</span> <span class="o">=</span> <span class="n">tempfile</span><span class="o">.</span><span class="n">NamedTemporaryFile</span><span class="p">()</span><span class="o">.</span><span class="n">name</span>
-</span><span id="L-78"><a href="#L-78"><span class="linenos"> 78</span></a>        <span class="n">ds</span> <span class="o">=</span> <span class="n">FileDataset</span><span class="p">(</span><span class="n">filename</span><span class="p">,</span> <span class="p">{},</span> <span class="n">file_meta</span><span class="o">=</span><span class="n">meta</span><span class="p">,</span> <span class="n">preamble</span><span class="o">=</span><span class="sa">b</span><span class="s2">&quot;</span><span class="se">\0</span><span class="s2">&quot;</span> <span class="o">*</span> <span class="mi">128</span><span class="p">)</span>
+</span><span id="L-61"><a href="#L-61"><span class="linenos"> 61</span></a>        <span class="n">file_meta</span><span class="o">.</span><span class="n">TransferSyntaxUID</span> <span class="o">=</span> <span class="n">ExplicitVRLittleEndian</span>
+</span><span id="L-62"><a href="#L-62"><span class="linenos"> 62</span></a>        <span class="n">file_meta</span><span class="o">.</span><span class="n">ImplementationVersionName</span> <span class="o">=</span> <span class="s2">&quot;pdf2dcm&quot;</span>
+</span><span id="L-63"><a href="#L-63"><span class="linenos"> 63</span></a>        <span class="k">return</span> <span class="n">file_meta</span>
+</span><span id="L-64"><a href="#L-64"><span class="linenos"> 64</span></a>
+</span><span id="L-65"><a href="#L-65"><span class="linenos"> 65</span></a>    <span class="nd">@staticmethod</span>
+</span><span id="L-66"><a href="#L-66"><span class="linenos"> 66</span></a>    <span class="k">def</span><span class="w"> </span><span class="nf">_get_dicom_body</span><span class="p">(</span><span class="n">meta</span><span class="p">:</span> <span class="n">FileMetaDataset</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">FileDataset</span><span class="p">:</span>
+</span><span id="L-67"><a href="#L-67"><span class="linenos"> 67</span></a><span class="w">        </span><span class="sd">&quot;&quot;&quot;Creates a temporary file as part of the DICOM PDF creation process</span>
+</span><span id="L-68"><a href="#L-68"><span class="linenos"> 68</span></a>
+</span><span id="L-69"><a href="#L-69"><span class="linenos"> 69</span></a><span class="sd">        Args:</span>
+</span><span id="L-70"><a href="#L-70"><span class="linenos"> 70</span></a><span class="sd">            meta (FileMetaDataset): the meta information of the dicom file</span>
+</span><span id="L-71"><a href="#L-71"><span class="linenos"> 71</span></a>
+</span><span id="L-72"><a href="#L-72"><span class="linenos"> 72</span></a><span class="sd">        Returns:</span>
+</span><span id="L-73"><a href="#L-73"><span class="linenos"> 73</span></a><span class="sd">            FileDataset: dicom file body information</span>
+</span><span id="L-74"><a href="#L-74"><span class="linenos"> 74</span></a><span class="sd">        &quot;&quot;&quot;</span>
+</span><span id="L-75"><a href="#L-75"><span class="linenos"> 75</span></a>        <span class="n">filename</span> <span class="o">=</span> <span class="n">tempfile</span><span class="o">.</span><span class="n">NamedTemporaryFile</span><span class="p">()</span><span class="o">.</span><span class="n">name</span>
+</span><span id="L-76"><a href="#L-76"><span class="linenos"> 76</span></a>        <span class="n">ds</span> <span class="o">=</span> <span class="n">FileDataset</span><span class="p">(</span><span class="n">filename</span><span class="p">,</span> <span class="p">{},</span> <span class="n">file_meta</span><span class="o">=</span><span class="n">meta</span><span class="p">,</span> <span class="n">preamble</span><span class="o">=</span><span class="sa">b</span><span class="s2">&quot;</span><span class="se">\0</span><span class="s2">&quot;</span> <span class="o">*</span> <span class="mi">128</span><span class="p">)</span>
+</span><span id="L-77"><a href="#L-77"><span class="linenos"> 77</span></a>
+</span><span id="L-78"><a href="#L-78"><span class="linenos"> 78</span></a>        <span class="n">ds</span><span class="o">.</span><span class="n">SOPInstanceUID</span> <span class="o">=</span> <span class="n">generate_uid</span><span class="p">()</span>
 </span><span id="L-79"><a href="#L-79"><span class="linenos"> 79</span></a>
-</span><span id="L-80"><a href="#L-80"><span class="linenos"> 80</span></a>        <span class="n">ds</span><span class="o">.</span><span class="n">is_little_endian</span> <span class="o">=</span> <span class="kc">True</span>
-</span><span id="L-81"><a href="#L-81"><span class="linenos"> 81</span></a>        <span class="n">ds</span><span class="o">.</span><span class="n">is_implicit_VR</span> <span class="o">=</span> <span class="kc">False</span>
-</span><span id="L-82"><a href="#L-82"><span class="linenos"> 82</span></a>        <span class="n">ds</span><span class="o">.</span><span class="n">SOPInstanceUID</span> <span class="o">=</span> <span class="n">generate_uid</span><span class="p">()</span>
-</span><span id="L-83"><a href="#L-83"><span class="linenos"> 83</span></a>
-</span><span id="L-84"><a href="#L-84"><span class="linenos"> 84</span></a>        <span class="c1"># if we want to create the pdf with the pdf creation timing</span>
-</span><span id="L-85"><a href="#L-85"><span class="linenos"> 85</span></a>        <span class="n">dt</span> <span class="o">=</span> <span class="n">datetime</span><span class="o">.</span><span class="n">datetime</span><span class="o">.</span><span class="n">now</span><span class="p">()</span>
-</span><span id="L-86"><a href="#L-86"><span class="linenos"> 86</span></a>        <span class="n">ds</span><span class="o">.</span><span class="n">ContentDate</span> <span class="o">=</span> <span class="n">dt</span><span class="o">.</span><span class="n">strftime</span><span class="p">(</span><span class="s2">&quot;%Y%m</span><span class="si">%d</span><span class="s2">&quot;</span><span class="p">)</span>
-</span><span id="L-87"><a href="#L-87"><span class="linenos"> 87</span></a>        <span class="n">timeStr</span> <span class="o">=</span> <span class="n">dt</span><span class="o">.</span><span class="n">strftime</span><span class="p">(</span><span class="s2">&quot;%H%M%S.</span><span class="si">%f</span><span class="s2">&quot;</span><span class="p">)</span>
-</span><span id="L-88"><a href="#L-88"><span class="linenos"> 88</span></a>        <span class="n">ds</span><span class="o">.</span><span class="n">ContentTime</span> <span class="o">=</span> <span class="n">timeStr</span>
+</span><span id="L-80"><a href="#L-80"><span class="linenos"> 80</span></a>        <span class="c1"># if we want to create the pdf with the pdf creation timing</span>
+</span><span id="L-81"><a href="#L-81"><span class="linenos"> 81</span></a>        <span class="n">dt</span> <span class="o">=</span> <span class="n">datetime</span><span class="o">.</span><span class="n">datetime</span><span class="o">.</span><span class="n">now</span><span class="p">()</span>
+</span><span id="L-82"><a href="#L-82"><span class="linenos"> 82</span></a>        <span class="n">ds</span><span class="o">.</span><span class="n">ContentDate</span> <span class="o">=</span> <span class="n">dt</span><span class="o">.</span><span class="n">strftime</span><span class="p">(</span><span class="s2">&quot;%Y%m</span><span class="si">%d</span><span class="s2">&quot;</span><span class="p">)</span>
+</span><span id="L-83"><a href="#L-83"><span class="linenos"> 83</span></a>        <span class="n">timeStr</span> <span class="o">=</span> <span class="n">dt</span><span class="o">.</span><span class="n">strftime</span><span class="p">(</span><span class="s2">&quot;%H%M%S.</span><span class="si">%f</span><span class="s2">&quot;</span><span class="p">)</span>
+</span><span id="L-84"><a href="#L-84"><span class="linenos"> 84</span></a>        <span class="n">ds</span><span class="o">.</span><span class="n">ContentTime</span> <span class="o">=</span> <span class="n">timeStr</span>
+</span><span id="L-85"><a href="#L-85"><span class="linenos"> 85</span></a>
+</span><span id="L-86"><a href="#L-86"><span class="linenos"> 86</span></a>        <span class="n">ds</span><span class="o">.</span><span class="n">Modality</span> <span class="o">=</span> <span class="s2">&quot;DOC&quot;</span>  <span class="c1"># document</span>
+</span><span id="L-87"><a href="#L-87"><span class="linenos"> 87</span></a>        <span class="n">ds</span><span class="o">.</span><span class="n">ConversionType</span> <span class="o">=</span> <span class="s2">&quot;WSD&quot;</span>  <span class="c1"># workstation</span>
+</span><span id="L-88"><a href="#L-88"><span class="linenos"> 88</span></a>        <span class="k">return</span> <span class="n">ds</span>
 </span><span id="L-89"><a href="#L-89"><span class="linenos"> 89</span></a>
-</span><span id="L-90"><a href="#L-90"><span class="linenos"> 90</span></a>        <span class="n">ds</span><span class="o">.</span><span class="n">Modality</span> <span class="o">=</span> <span class="s2">&quot;DOC&quot;</span>  <span class="c1"># document</span>
-</span><span id="L-91"><a href="#L-91"><span class="linenos"> 91</span></a>        <span class="n">ds</span><span class="o">.</span><span class="n">ConversionType</span> <span class="o">=</span> <span class="s2">&quot;WSD&quot;</span>  <span class="c1"># workstation</span>
-</span><span id="L-92"><a href="#L-92"><span class="linenos"> 92</span></a>        <span class="k">return</span> <span class="n">ds</span>
+</span><span id="L-90"><a href="#L-90"><span class="linenos"> 90</span></a>    <span class="nd">@staticmethod</span>
+</span><span id="L-91"><a href="#L-91"><span class="linenos"> 91</span></a>    <span class="k">def</span><span class="w"> </span><span class="nf">_store_ds</span><span class="p">(</span><span class="n">store_path</span><span class="p">:</span> <span class="n">Path</span><span class="p">,</span> <span class="n">ds</span><span class="p">:</span> <span class="n">FileDataset</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Path</span><span class="p">:</span>
+</span><span id="L-92"><a href="#L-92"><span class="linenos"> 92</span></a><span class="w">        </span><span class="sd">&quot;&quot;&quot;check and store the dicom at a given location</span>
 </span><span id="L-93"><a href="#L-93"><span class="linenos"> 93</span></a>
-</span><span id="L-94"><a href="#L-94"><span class="linenos"> 94</span></a>    <span class="nd">@staticmethod</span>
-</span><span id="L-95"><a href="#L-95"><span class="linenos"> 95</span></a>    <span class="k">def</span><span class="w"> </span><span class="nf">_store_ds</span><span class="p">(</span><span class="n">store_path</span><span class="p">:</span> <span class="n">Path</span><span class="p">,</span> <span class="n">ds</span><span class="p">:</span> <span class="n">FileDataset</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Path</span><span class="p">:</span>
-</span><span id="L-96"><a href="#L-96"><span class="linenos"> 96</span></a><span class="w">        </span><span class="sd">&quot;&quot;&quot;check and store the dicom at a given location</span>
+</span><span id="L-94"><a href="#L-94"><span class="linenos"> 94</span></a><span class="sd">        Args:</span>
+</span><span id="L-95"><a href="#L-95"><span class="linenos"> 95</span></a><span class="sd">            store_path (Path): output storage path for the pdf dicom</span>
+</span><span id="L-96"><a href="#L-96"><span class="linenos"> 96</span></a><span class="sd">            ds (FileDataset): the dicom pdf</span>
 </span><span id="L-97"><a href="#L-97"><span class="linenos"> 97</span></a>
-</span><span id="L-98"><a href="#L-98"><span class="linenos"> 98</span></a><span class="sd">        Args:</span>
-</span><span id="L-99"><a href="#L-99"><span class="linenos"> 99</span></a><span class="sd">            store_path (Path): output storage path for the pdf dicom</span>
-</span><span id="L-100"><a href="#L-100"><span class="linenos">100</span></a><span class="sd">            ds (FileDataset): the dicom pdf</span>
-</span><span id="L-101"><a href="#L-101"><span class="linenos">101</span></a>
-</span><span id="L-102"><a href="#L-102"><span class="linenos">102</span></a><span class="sd">        Returns:</span>
-</span><span id="L-103"><a href="#L-103"><span class="linenos">103</span></a><span class="sd">            [Path]: output storage path for the pdf dicom</span>
-</span><span id="L-104"><a href="#L-104"><span class="linenos">104</span></a><span class="sd">        &quot;&quot;&quot;</span>
-</span><span id="L-105"><a href="#L-105"><span class="linenos">105</span></a>        <span class="n">validate_file_meta</span><span class="p">(</span><span class="n">ds</span><span class="o">.</span><span class="n">file_meta</span><span class="p">)</span>
-</span><span id="L-106"><a href="#L-106"><span class="linenos">106</span></a>        <span class="n">ds</span><span class="o">.</span><span class="n">save_as</span><span class="p">(</span><span class="n">store_path</span><span class="p">,</span> <span class="n">enforce_file_format</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
-</span><span id="L-107"><a href="#L-107"><span class="linenos">107</span></a>        <span class="k">return</span> <span class="n">store_path</span>
+</span><span id="L-98"><a href="#L-98"><span class="linenos"> 98</span></a><span class="sd">        Returns:</span>
+</span><span id="L-99"><a href="#L-99"><span class="linenos"> 99</span></a><span class="sd">            [Path]: output storage path for the pdf dicom</span>
+</span><span id="L-100"><a href="#L-100"><span class="linenos">100</span></a><span class="sd">        &quot;&quot;&quot;</span>
+</span><span id="L-101"><a href="#L-101"><span class="linenos">101</span></a>        <span class="n">validate_file_meta</span><span class="p">(</span><span class="n">ds</span><span class="o">.</span><span class="n">file_meta</span><span class="p">)</span>
+</span><span id="L-102"><a href="#L-102"><span class="linenos">102</span></a>        <span class="n">ds</span><span class="o">.</span><span class="n">save_as</span><span class="p">(</span><span class="n">store_path</span><span class="p">,</span> <span class="n">enforce_file_format</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+</span><span id="L-103"><a href="#L-103"><span class="linenos">103</span></a>        <span class="k">return</span> <span class="n">store_path</span>
+</span><span id="L-104"><a href="#L-104"><span class="linenos">104</span></a>
+</span><span id="L-105"><a href="#L-105"><span class="linenos">105</span></a>    <span class="nd">@staticmethod</span>
+</span><span id="L-106"><a href="#L-106"><span class="linenos">106</span></a>    <span class="k">def</span><span class="w"> </span><span class="nf">check_valid_dcm</span><span class="p">(</span><span class="n">path</span><span class="p">:</span> <span class="n">Path</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
+</span><span id="L-107"><a href="#L-107"><span class="linenos">107</span></a><span class="w">        </span><span class="sd">&quot;&quot;&quot;check whether given file is a dicom or not</span>
 </span><span id="L-108"><a href="#L-108"><span class="linenos">108</span></a>
-</span><span id="L-109"><a href="#L-109"><span class="linenos">109</span></a>    <span class="nd">@staticmethod</span>
-</span><span id="L-110"><a href="#L-110"><span class="linenos">110</span></a>    <span class="k">def</span><span class="w"> </span><span class="nf">check_valid_dcm</span><span class="p">(</span><span class="n">path</span><span class="p">:</span> <span class="n">Path</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
-</span><span id="L-111"><a href="#L-111"><span class="linenos">111</span></a><span class="w">        </span><span class="sd">&quot;&quot;&quot;check whether given file is a dicom or not</span>
-</span><span id="L-112"><a href="#L-112"><span class="linenos">112</span></a>
-</span><span id="L-113"><a href="#L-113"><span class="linenos">113</span></a><span class="sd">        Args:</span>
-</span><span id="L-114"><a href="#L-114"><span class="linenos">114</span></a><span class="sd">            path (Path): path to a dicom file</span>
-</span><span id="L-115"><a href="#L-115"><span class="linenos">115</span></a>
-</span><span id="L-116"><a href="#L-116"><span class="linenos">116</span></a><span class="sd">        Returns:</span>
-</span><span id="L-117"><a href="#L-117"><span class="linenos">117</span></a><span class="sd">            bool: boolean value True for dicom else False</span>
-</span><span id="L-118"><a href="#L-118"><span class="linenos">118</span></a><span class="sd">        &quot;&quot;&quot;</span>
-</span><span id="L-119"><a href="#L-119"><span class="linenos">119</span></a>        <span class="k">try</span><span class="p">:</span>
-</span><span id="L-120"><a href="#L-120"><span class="linenos">120</span></a>            <span class="n">pydicom</span><span class="o">.</span><span class="n">dcmread</span><span class="p">(</span><span class="n">path</span><span class="p">,</span> <span class="n">defer_size</span><span class="o">=</span><span class="mi">1024</span><span class="p">)</span>
-</span><span id="L-121"><a href="#L-121"><span class="linenos">121</span></a>        <span class="k">except</span> <span class="n">InvalidDicomError</span><span class="p">:</span>
-</span><span id="L-122"><a href="#L-122"><span class="linenos">122</span></a>            <span class="k">return</span> <span class="kc">False</span>
-</span><span id="L-123"><a href="#L-123"><span class="linenos">123</span></a>
-</span><span id="L-124"><a href="#L-124"><span class="linenos">124</span></a>        <span class="k">return</span> <span class="kc">True</span>
-</span><span id="L-125"><a href="#L-125"><span class="linenos">125</span></a>
-</span><span id="L-126"><a href="#L-126"><span class="linenos">126</span></a>    <span class="nd">@abstractmethod</span>
-</span><span id="L-127"><a href="#L-127"><span class="linenos">127</span></a>    <span class="k">def</span><span class="w"> </span><span class="nf">run</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">path_pdf</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">path_template_dcm</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">suffix</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">List</span><span class="p">[</span><span class="n">Path</span><span class="p">]:</span>
-</span><span id="L-128"><a href="#L-128"><span class="linenos">128</span></a>        <span class="k">pass</span>
+</span><span id="L-109"><a href="#L-109"><span class="linenos">109</span></a><span class="sd">        Args:</span>
+</span><span id="L-110"><a href="#L-110"><span class="linenos">110</span></a><span class="sd">            path (Path): path to a dicom file</span>
+</span><span id="L-111"><a href="#L-111"><span class="linenos">111</span></a>
+</span><span id="L-112"><a href="#L-112"><span class="linenos">112</span></a><span class="sd">        Returns:</span>
+</span><span id="L-113"><a href="#L-113"><span class="linenos">113</span></a><span class="sd">            bool: boolean value True for dicom else False</span>
+</span><span id="L-114"><a href="#L-114"><span class="linenos">114</span></a><span class="sd">        &quot;&quot;&quot;</span>
+</span><span id="L-115"><a href="#L-115"><span class="linenos">115</span></a>        <span class="k">try</span><span class="p">:</span>
+</span><span id="L-116"><a href="#L-116"><span class="linenos">116</span></a>            <span class="n">pydicom</span><span class="o">.</span><span class="n">dcmread</span><span class="p">(</span><span class="n">path</span><span class="p">,</span> <span class="n">defer_size</span><span class="o">=</span><span class="mi">1024</span><span class="p">)</span>
+</span><span id="L-117"><a href="#L-117"><span class="linenos">117</span></a>        <span class="k">except</span> <span class="n">InvalidDicomError</span><span class="p">:</span>
+</span><span id="L-118"><a href="#L-118"><span class="linenos">118</span></a>            <span class="k">return</span> <span class="kc">False</span>
+</span><span id="L-119"><a href="#L-119"><span class="linenos">119</span></a>
+</span><span id="L-120"><a href="#L-120"><span class="linenos">120</span></a>        <span class="k">return</span> <span class="kc">True</span>
+</span><span id="L-121"><a href="#L-121"><span class="linenos">121</span></a>
+</span><span id="L-122"><a href="#L-122"><span class="linenos">122</span></a>    <span class="nd">@abstractmethod</span>
+</span><span id="L-123"><a href="#L-123"><span class="linenos">123</span></a>    <span class="k">def</span><span class="w"> </span><span class="nf">run</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">path_pdf</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">path_template_dcm</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">suffix</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">List</span><span class="p">[</span><span class="n">Path</span><span class="p">]:</span>
+</span><span id="L-124"><a href="#L-124"><span class="linenos">124</span></a>        <span class="k">pass</span>
 </span></pre></div>
 
 
@@ -254,74 +250,70 @@
 </span><span id="BaseConverter-59"><a href="#BaseConverter-59"><span class="linenos"> 59</span></a>
 </span><span id="BaseConverter-60"><a href="#BaseConverter-60"><span class="linenos"> 60</span></a>        <span class="n">file_meta</span> <span class="o">=</span> <span class="n">FileMetaDataset</span><span class="p">()</span>
 </span><span id="BaseConverter-61"><a href="#BaseConverter-61"><span class="linenos"> 61</span></a>        <span class="n">file_meta</span><span class="o">.</span><span class="n">FileMetaInformationVersion</span> <span class="o">=</span> <span class="sa">b</span><span class="s2">&quot;</span><span class="se">\x00\x01</span><span class="s2">&quot;</span>
-</span><span id="BaseConverter-62"><a href="#BaseConverter-62"><span class="linenos"> 62</span></a>        <span class="n">file_meta</span><span class="o">.</span><span class="n">TransferSyntaxUID</span> <span class="o">=</span> <span class="p">(</span>
-</span><span id="BaseConverter-63"><a href="#BaseConverter-63"><span class="linenos"> 63</span></a>            <span class="s2">&quot;1.2.840.10008.1.2.1&quot;</span>  <span class="c1"># std transfer uid little endian, implicit vr</span>
-</span><span id="BaseConverter-64"><a href="#BaseConverter-64"><span class="linenos"> 64</span></a>        <span class="p">)</span>
-</span><span id="BaseConverter-65"><a href="#BaseConverter-65"><span class="linenos"> 65</span></a>        <span class="n">file_meta</span><span class="o">.</span><span class="n">ImplementationVersionName</span> <span class="o">=</span> <span class="s2">&quot;pdf2dcm&quot;</span>
-</span><span id="BaseConverter-66"><a href="#BaseConverter-66"><span class="linenos"> 66</span></a>        <span class="k">return</span> <span class="n">file_meta</span>
-</span><span id="BaseConverter-67"><a href="#BaseConverter-67"><span class="linenos"> 67</span></a>
-</span><span id="BaseConverter-68"><a href="#BaseConverter-68"><span class="linenos"> 68</span></a>    <span class="nd">@staticmethod</span>
-</span><span id="BaseConverter-69"><a href="#BaseConverter-69"><span class="linenos"> 69</span></a>    <span class="k">def</span><span class="w"> </span><span class="nf">_get_dicom_body</span><span class="p">(</span><span class="n">meta</span><span class="p">:</span> <span class="n">FileMetaDataset</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">FileDataset</span><span class="p">:</span>
-</span><span id="BaseConverter-70"><a href="#BaseConverter-70"><span class="linenos"> 70</span></a><span class="w">        </span><span class="sd">&quot;&quot;&quot;Creates a temporary file as part of the DICOM PDF creation process</span>
-</span><span id="BaseConverter-71"><a href="#BaseConverter-71"><span class="linenos"> 71</span></a>
-</span><span id="BaseConverter-72"><a href="#BaseConverter-72"><span class="linenos"> 72</span></a><span class="sd">        Args:</span>
-</span><span id="BaseConverter-73"><a href="#BaseConverter-73"><span class="linenos"> 73</span></a><span class="sd">            meta (FileMetaDataset): the meta information of the dicom file</span>
-</span><span id="BaseConverter-74"><a href="#BaseConverter-74"><span class="linenos"> 74</span></a>
-</span><span id="BaseConverter-75"><a href="#BaseConverter-75"><span class="linenos"> 75</span></a><span class="sd">        Returns:</span>
-</span><span id="BaseConverter-76"><a href="#BaseConverter-76"><span class="linenos"> 76</span></a><span class="sd">            FileDataset: dicom file body information</span>
-</span><span id="BaseConverter-77"><a href="#BaseConverter-77"><span class="linenos"> 77</span></a><span class="sd">        &quot;&quot;&quot;</span>
-</span><span id="BaseConverter-78"><a href="#BaseConverter-78"><span class="linenos"> 78</span></a>        <span class="n">filename</span> <span class="o">=</span> <span class="n">tempfile</span><span class="o">.</span><span class="n">NamedTemporaryFile</span><span class="p">()</span><span class="o">.</span><span class="n">name</span>
-</span><span id="BaseConverter-79"><a href="#BaseConverter-79"><span class="linenos"> 79</span></a>        <span class="n">ds</span> <span class="o">=</span> <span class="n">FileDataset</span><span class="p">(</span><span class="n">filename</span><span class="p">,</span> <span class="p">{},</span> <span class="n">file_meta</span><span class="o">=</span><span class="n">meta</span><span class="p">,</span> <span class="n">preamble</span><span class="o">=</span><span class="sa">b</span><span class="s2">&quot;</span><span class="se">\0</span><span class="s2">&quot;</span> <span class="o">*</span> <span class="mi">128</span><span class="p">)</span>
+</span><span id="BaseConverter-62"><a href="#BaseConverter-62"><span class="linenos"> 62</span></a>        <span class="n">file_meta</span><span class="o">.</span><span class="n">TransferSyntaxUID</span> <span class="o">=</span> <span class="n">ExplicitVRLittleEndian</span>
+</span><span id="BaseConverter-63"><a href="#BaseConverter-63"><span class="linenos"> 63</span></a>        <span class="n">file_meta</span><span class="o">.</span><span class="n">ImplementationVersionName</span> <span class="o">=</span> <span class="s2">&quot;pdf2dcm&quot;</span>
+</span><span id="BaseConverter-64"><a href="#BaseConverter-64"><span class="linenos"> 64</span></a>        <span class="k">return</span> <span class="n">file_meta</span>
+</span><span id="BaseConverter-65"><a href="#BaseConverter-65"><span class="linenos"> 65</span></a>
+</span><span id="BaseConverter-66"><a href="#BaseConverter-66"><span class="linenos"> 66</span></a>    <span class="nd">@staticmethod</span>
+</span><span id="BaseConverter-67"><a href="#BaseConverter-67"><span class="linenos"> 67</span></a>    <span class="k">def</span><span class="w"> </span><span class="nf">_get_dicom_body</span><span class="p">(</span><span class="n">meta</span><span class="p">:</span> <span class="n">FileMetaDataset</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">FileDataset</span><span class="p">:</span>
+</span><span id="BaseConverter-68"><a href="#BaseConverter-68"><span class="linenos"> 68</span></a><span class="w">        </span><span class="sd">&quot;&quot;&quot;Creates a temporary file as part of the DICOM PDF creation process</span>
+</span><span id="BaseConverter-69"><a href="#BaseConverter-69"><span class="linenos"> 69</span></a>
+</span><span id="BaseConverter-70"><a href="#BaseConverter-70"><span class="linenos"> 70</span></a><span class="sd">        Args:</span>
+</span><span id="BaseConverter-71"><a href="#BaseConverter-71"><span class="linenos"> 71</span></a><span class="sd">            meta (FileMetaDataset): the meta information of the dicom file</span>
+</span><span id="BaseConverter-72"><a href="#BaseConverter-72"><span class="linenos"> 72</span></a>
+</span><span id="BaseConverter-73"><a href="#BaseConverter-73"><span class="linenos"> 73</span></a><span class="sd">        Returns:</span>
+</span><span id="BaseConverter-74"><a href="#BaseConverter-74"><span class="linenos"> 74</span></a><span class="sd">            FileDataset: dicom file body information</span>
+</span><span id="BaseConverter-75"><a href="#BaseConverter-75"><span class="linenos"> 75</span></a><span class="sd">        &quot;&quot;&quot;</span>
+</span><span id="BaseConverter-76"><a href="#BaseConverter-76"><span class="linenos"> 76</span></a>        <span class="n">filename</span> <span class="o">=</span> <span class="n">tempfile</span><span class="o">.</span><span class="n">NamedTemporaryFile</span><span class="p">()</span><span class="o">.</span><span class="n">name</span>
+</span><span id="BaseConverter-77"><a href="#BaseConverter-77"><span class="linenos"> 77</span></a>        <span class="n">ds</span> <span class="o">=</span> <span class="n">FileDataset</span><span class="p">(</span><span class="n">filename</span><span class="p">,</span> <span class="p">{},</span> <span class="n">file_meta</span><span class="o">=</span><span class="n">meta</span><span class="p">,</span> <span class="n">preamble</span><span class="o">=</span><span class="sa">b</span><span class="s2">&quot;</span><span class="se">\0</span><span class="s2">&quot;</span> <span class="o">*</span> <span class="mi">128</span><span class="p">)</span>
+</span><span id="BaseConverter-78"><a href="#BaseConverter-78"><span class="linenos"> 78</span></a>
+</span><span id="BaseConverter-79"><a href="#BaseConverter-79"><span class="linenos"> 79</span></a>        <span class="n">ds</span><span class="o">.</span><span class="n">SOPInstanceUID</span> <span class="o">=</span> <span class="n">generate_uid</span><span class="p">()</span>
 </span><span id="BaseConverter-80"><a href="#BaseConverter-80"><span class="linenos"> 80</span></a>
-</span><span id="BaseConverter-81"><a href="#BaseConverter-81"><span class="linenos"> 81</span></a>        <span class="n">ds</span><span class="o">.</span><span class="n">is_little_endian</span> <span class="o">=</span> <span class="kc">True</span>
-</span><span id="BaseConverter-82"><a href="#BaseConverter-82"><span class="linenos"> 82</span></a>        <span class="n">ds</span><span class="o">.</span><span class="n">is_implicit_VR</span> <span class="o">=</span> <span class="kc">False</span>
-</span><span id="BaseConverter-83"><a href="#BaseConverter-83"><span class="linenos"> 83</span></a>        <span class="n">ds</span><span class="o">.</span><span class="n">SOPInstanceUID</span> <span class="o">=</span> <span class="n">generate_uid</span><span class="p">()</span>
-</span><span id="BaseConverter-84"><a href="#BaseConverter-84"><span class="linenos"> 84</span></a>
-</span><span id="BaseConverter-85"><a href="#BaseConverter-85"><span class="linenos"> 85</span></a>        <span class="c1"># if we want to create the pdf with the pdf creation timing</span>
-</span><span id="BaseConverter-86"><a href="#BaseConverter-86"><span class="linenos"> 86</span></a>        <span class="n">dt</span> <span class="o">=</span> <span class="n">datetime</span><span class="o">.</span><span class="n">datetime</span><span class="o">.</span><span class="n">now</span><span class="p">()</span>
-</span><span id="BaseConverter-87"><a href="#BaseConverter-87"><span class="linenos"> 87</span></a>        <span class="n">ds</span><span class="o">.</span><span class="n">ContentDate</span> <span class="o">=</span> <span class="n">dt</span><span class="o">.</span><span class="n">strftime</span><span class="p">(</span><span class="s2">&quot;%Y%m</span><span class="si">%d</span><span class="s2">&quot;</span><span class="p">)</span>
-</span><span id="BaseConverter-88"><a href="#BaseConverter-88"><span class="linenos"> 88</span></a>        <span class="n">timeStr</span> <span class="o">=</span> <span class="n">dt</span><span class="o">.</span><span class="n">strftime</span><span class="p">(</span><span class="s2">&quot;%H%M%S.</span><span class="si">%f</span><span class="s2">&quot;</span><span class="p">)</span>
-</span><span id="BaseConverter-89"><a href="#BaseConverter-89"><span class="linenos"> 89</span></a>        <span class="n">ds</span><span class="o">.</span><span class="n">ContentTime</span> <span class="o">=</span> <span class="n">timeStr</span>
+</span><span id="BaseConverter-81"><a href="#BaseConverter-81"><span class="linenos"> 81</span></a>        <span class="c1"># if we want to create the pdf with the pdf creation timing</span>
+</span><span id="BaseConverter-82"><a href="#BaseConverter-82"><span class="linenos"> 82</span></a>        <span class="n">dt</span> <span class="o">=</span> <span class="n">datetime</span><span class="o">.</span><span class="n">datetime</span><span class="o">.</span><span class="n">now</span><span class="p">()</span>
+</span><span id="BaseConverter-83"><a href="#BaseConverter-83"><span class="linenos"> 83</span></a>        <span class="n">ds</span><span class="o">.</span><span class="n">ContentDate</span> <span class="o">=</span> <span class="n">dt</span><span class="o">.</span><span class="n">strftime</span><span class="p">(</span><span class="s2">&quot;%Y%m</span><span class="si">%d</span><span class="s2">&quot;</span><span class="p">)</span>
+</span><span id="BaseConverter-84"><a href="#BaseConverter-84"><span class="linenos"> 84</span></a>        <span class="n">timeStr</span> <span class="o">=</span> <span class="n">dt</span><span class="o">.</span><span class="n">strftime</span><span class="p">(</span><span class="s2">&quot;%H%M%S.</span><span class="si">%f</span><span class="s2">&quot;</span><span class="p">)</span>
+</span><span id="BaseConverter-85"><a href="#BaseConverter-85"><span class="linenos"> 85</span></a>        <span class="n">ds</span><span class="o">.</span><span class="n">ContentTime</span> <span class="o">=</span> <span class="n">timeStr</span>
+</span><span id="BaseConverter-86"><a href="#BaseConverter-86"><span class="linenos"> 86</span></a>
+</span><span id="BaseConverter-87"><a href="#BaseConverter-87"><span class="linenos"> 87</span></a>        <span class="n">ds</span><span class="o">.</span><span class="n">Modality</span> <span class="o">=</span> <span class="s2">&quot;DOC&quot;</span>  <span class="c1"># document</span>
+</span><span id="BaseConverter-88"><a href="#BaseConverter-88"><span class="linenos"> 88</span></a>        <span class="n">ds</span><span class="o">.</span><span class="n">ConversionType</span> <span class="o">=</span> <span class="s2">&quot;WSD&quot;</span>  <span class="c1"># workstation</span>
+</span><span id="BaseConverter-89"><a href="#BaseConverter-89"><span class="linenos"> 89</span></a>        <span class="k">return</span> <span class="n">ds</span>
 </span><span id="BaseConverter-90"><a href="#BaseConverter-90"><span class="linenos"> 90</span></a>
-</span><span id="BaseConverter-91"><a href="#BaseConverter-91"><span class="linenos"> 91</span></a>        <span class="n">ds</span><span class="o">.</span><span class="n">Modality</span> <span class="o">=</span> <span class="s2">&quot;DOC&quot;</span>  <span class="c1"># document</span>
-</span><span id="BaseConverter-92"><a href="#BaseConverter-92"><span class="linenos"> 92</span></a>        <span class="n">ds</span><span class="o">.</span><span class="n">ConversionType</span> <span class="o">=</span> <span class="s2">&quot;WSD&quot;</span>  <span class="c1"># workstation</span>
-</span><span id="BaseConverter-93"><a href="#BaseConverter-93"><span class="linenos"> 93</span></a>        <span class="k">return</span> <span class="n">ds</span>
+</span><span id="BaseConverter-91"><a href="#BaseConverter-91"><span class="linenos"> 91</span></a>    <span class="nd">@staticmethod</span>
+</span><span id="BaseConverter-92"><a href="#BaseConverter-92"><span class="linenos"> 92</span></a>    <span class="k">def</span><span class="w"> </span><span class="nf">_store_ds</span><span class="p">(</span><span class="n">store_path</span><span class="p">:</span> <span class="n">Path</span><span class="p">,</span> <span class="n">ds</span><span class="p">:</span> <span class="n">FileDataset</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Path</span><span class="p">:</span>
+</span><span id="BaseConverter-93"><a href="#BaseConverter-93"><span class="linenos"> 93</span></a><span class="w">        </span><span class="sd">&quot;&quot;&quot;check and store the dicom at a given location</span>
 </span><span id="BaseConverter-94"><a href="#BaseConverter-94"><span class="linenos"> 94</span></a>
-</span><span id="BaseConverter-95"><a href="#BaseConverter-95"><span class="linenos"> 95</span></a>    <span class="nd">@staticmethod</span>
-</span><span id="BaseConverter-96"><a href="#BaseConverter-96"><span class="linenos"> 96</span></a>    <span class="k">def</span><span class="w"> </span><span class="nf">_store_ds</span><span class="p">(</span><span class="n">store_path</span><span class="p">:</span> <span class="n">Path</span><span class="p">,</span> <span class="n">ds</span><span class="p">:</span> <span class="n">FileDataset</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Path</span><span class="p">:</span>
-</span><span id="BaseConverter-97"><a href="#BaseConverter-97"><span class="linenos"> 97</span></a><span class="w">        </span><span class="sd">&quot;&quot;&quot;check and store the dicom at a given location</span>
+</span><span id="BaseConverter-95"><a href="#BaseConverter-95"><span class="linenos"> 95</span></a><span class="sd">        Args:</span>
+</span><span id="BaseConverter-96"><a href="#BaseConverter-96"><span class="linenos"> 96</span></a><span class="sd">            store_path (Path): output storage path for the pdf dicom</span>
+</span><span id="BaseConverter-97"><a href="#BaseConverter-97"><span class="linenos"> 97</span></a><span class="sd">            ds (FileDataset): the dicom pdf</span>
 </span><span id="BaseConverter-98"><a href="#BaseConverter-98"><span class="linenos"> 98</span></a>
-</span><span id="BaseConverter-99"><a href="#BaseConverter-99"><span class="linenos"> 99</span></a><span class="sd">        Args:</span>
-</span><span id="BaseConverter-100"><a href="#BaseConverter-100"><span class="linenos">100</span></a><span class="sd">            store_path (Path): output storage path for the pdf dicom</span>
-</span><span id="BaseConverter-101"><a href="#BaseConverter-101"><span class="linenos">101</span></a><span class="sd">            ds (FileDataset): the dicom pdf</span>
-</span><span id="BaseConverter-102"><a href="#BaseConverter-102"><span class="linenos">102</span></a>
-</span><span id="BaseConverter-103"><a href="#BaseConverter-103"><span class="linenos">103</span></a><span class="sd">        Returns:</span>
-</span><span id="BaseConverter-104"><a href="#BaseConverter-104"><span class="linenos">104</span></a><span class="sd">            [Path]: output storage path for the pdf dicom</span>
-</span><span id="BaseConverter-105"><a href="#BaseConverter-105"><span class="linenos">105</span></a><span class="sd">        &quot;&quot;&quot;</span>
-</span><span id="BaseConverter-106"><a href="#BaseConverter-106"><span class="linenos">106</span></a>        <span class="n">validate_file_meta</span><span class="p">(</span><span class="n">ds</span><span class="o">.</span><span class="n">file_meta</span><span class="p">)</span>
-</span><span id="BaseConverter-107"><a href="#BaseConverter-107"><span class="linenos">107</span></a>        <span class="n">ds</span><span class="o">.</span><span class="n">save_as</span><span class="p">(</span><span class="n">store_path</span><span class="p">,</span> <span class="n">enforce_file_format</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
-</span><span id="BaseConverter-108"><a href="#BaseConverter-108"><span class="linenos">108</span></a>        <span class="k">return</span> <span class="n">store_path</span>
+</span><span id="BaseConverter-99"><a href="#BaseConverter-99"><span class="linenos"> 99</span></a><span class="sd">        Returns:</span>
+</span><span id="BaseConverter-100"><a href="#BaseConverter-100"><span class="linenos">100</span></a><span class="sd">            [Path]: output storage path for the pdf dicom</span>
+</span><span id="BaseConverter-101"><a href="#BaseConverter-101"><span class="linenos">101</span></a><span class="sd">        &quot;&quot;&quot;</span>
+</span><span id="BaseConverter-102"><a href="#BaseConverter-102"><span class="linenos">102</span></a>        <span class="n">validate_file_meta</span><span class="p">(</span><span class="n">ds</span><span class="o">.</span><span class="n">file_meta</span><span class="p">)</span>
+</span><span id="BaseConverter-103"><a href="#BaseConverter-103"><span class="linenos">103</span></a>        <span class="n">ds</span><span class="o">.</span><span class="n">save_as</span><span class="p">(</span><span class="n">store_path</span><span class="p">,</span> <span class="n">enforce_file_format</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+</span><span id="BaseConverter-104"><a href="#BaseConverter-104"><span class="linenos">104</span></a>        <span class="k">return</span> <span class="n">store_path</span>
+</span><span id="BaseConverter-105"><a href="#BaseConverter-105"><span class="linenos">105</span></a>
+</span><span id="BaseConverter-106"><a href="#BaseConverter-106"><span class="linenos">106</span></a>    <span class="nd">@staticmethod</span>
+</span><span id="BaseConverter-107"><a href="#BaseConverter-107"><span class="linenos">107</span></a>    <span class="k">def</span><span class="w"> </span><span class="nf">check_valid_dcm</span><span class="p">(</span><span class="n">path</span><span class="p">:</span> <span class="n">Path</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
+</span><span id="BaseConverter-108"><a href="#BaseConverter-108"><span class="linenos">108</span></a><span class="w">        </span><span class="sd">&quot;&quot;&quot;check whether given file is a dicom or not</span>
 </span><span id="BaseConverter-109"><a href="#BaseConverter-109"><span class="linenos">109</span></a>
-</span><span id="BaseConverter-110"><a href="#BaseConverter-110"><span class="linenos">110</span></a>    <span class="nd">@staticmethod</span>
-</span><span id="BaseConverter-111"><a href="#BaseConverter-111"><span class="linenos">111</span></a>    <span class="k">def</span><span class="w"> </span><span class="nf">check_valid_dcm</span><span class="p">(</span><span class="n">path</span><span class="p">:</span> <span class="n">Path</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
-</span><span id="BaseConverter-112"><a href="#BaseConverter-112"><span class="linenos">112</span></a><span class="w">        </span><span class="sd">&quot;&quot;&quot;check whether given file is a dicom or not</span>
-</span><span id="BaseConverter-113"><a href="#BaseConverter-113"><span class="linenos">113</span></a>
-</span><span id="BaseConverter-114"><a href="#BaseConverter-114"><span class="linenos">114</span></a><span class="sd">        Args:</span>
-</span><span id="BaseConverter-115"><a href="#BaseConverter-115"><span class="linenos">115</span></a><span class="sd">            path (Path): path to a dicom file</span>
-</span><span id="BaseConverter-116"><a href="#BaseConverter-116"><span class="linenos">116</span></a>
-</span><span id="BaseConverter-117"><a href="#BaseConverter-117"><span class="linenos">117</span></a><span class="sd">        Returns:</span>
-</span><span id="BaseConverter-118"><a href="#BaseConverter-118"><span class="linenos">118</span></a><span class="sd">            bool: boolean value True for dicom else False</span>
-</span><span id="BaseConverter-119"><a href="#BaseConverter-119"><span class="linenos">119</span></a><span class="sd">        &quot;&quot;&quot;</span>
-</span><span id="BaseConverter-120"><a href="#BaseConverter-120"><span class="linenos">120</span></a>        <span class="k">try</span><span class="p">:</span>
-</span><span id="BaseConverter-121"><a href="#BaseConverter-121"><span class="linenos">121</span></a>            <span class="n">pydicom</span><span class="o">.</span><span class="n">dcmread</span><span class="p">(</span><span class="n">path</span><span class="p">,</span> <span class="n">defer_size</span><span class="o">=</span><span class="mi">1024</span><span class="p">)</span>
-</span><span id="BaseConverter-122"><a href="#BaseConverter-122"><span class="linenos">122</span></a>        <span class="k">except</span> <span class="n">InvalidDicomError</span><span class="p">:</span>
-</span><span id="BaseConverter-123"><a href="#BaseConverter-123"><span class="linenos">123</span></a>            <span class="k">return</span> <span class="kc">False</span>
-</span><span id="BaseConverter-124"><a href="#BaseConverter-124"><span class="linenos">124</span></a>
-</span><span id="BaseConverter-125"><a href="#BaseConverter-125"><span class="linenos">125</span></a>        <span class="k">return</span> <span class="kc">True</span>
-</span><span id="BaseConverter-126"><a href="#BaseConverter-126"><span class="linenos">126</span></a>
-</span><span id="BaseConverter-127"><a href="#BaseConverter-127"><span class="linenos">127</span></a>    <span class="nd">@abstractmethod</span>
-</span><span id="BaseConverter-128"><a href="#BaseConverter-128"><span class="linenos">128</span></a>    <span class="k">def</span><span class="w"> </span><span class="nf">run</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">path_pdf</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">path_template_dcm</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">suffix</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">List</span><span class="p">[</span><span class="n">Path</span><span class="p">]:</span>
-</span><span id="BaseConverter-129"><a href="#BaseConverter-129"><span class="linenos">129</span></a>        <span class="k">pass</span>
+</span><span id="BaseConverter-110"><a href="#BaseConverter-110"><span class="linenos">110</span></a><span class="sd">        Args:</span>
+</span><span id="BaseConverter-111"><a href="#BaseConverter-111"><span class="linenos">111</span></a><span class="sd">            path (Path): path to a dicom file</span>
+</span><span id="BaseConverter-112"><a href="#BaseConverter-112"><span class="linenos">112</span></a>
+</span><span id="BaseConverter-113"><a href="#BaseConverter-113"><span class="linenos">113</span></a><span class="sd">        Returns:</span>
+</span><span id="BaseConverter-114"><a href="#BaseConverter-114"><span class="linenos">114</span></a><span class="sd">            bool: boolean value True for dicom else False</span>
+</span><span id="BaseConverter-115"><a href="#BaseConverter-115"><span class="linenos">115</span></a><span class="sd">        &quot;&quot;&quot;</span>
+</span><span id="BaseConverter-116"><a href="#BaseConverter-116"><span class="linenos">116</span></a>        <span class="k">try</span><span class="p">:</span>
+</span><span id="BaseConverter-117"><a href="#BaseConverter-117"><span class="linenos">117</span></a>            <span class="n">pydicom</span><span class="o">.</span><span class="n">dcmread</span><span class="p">(</span><span class="n">path</span><span class="p">,</span> <span class="n">defer_size</span><span class="o">=</span><span class="mi">1024</span><span class="p">)</span>
+</span><span id="BaseConverter-118"><a href="#BaseConverter-118"><span class="linenos">118</span></a>        <span class="k">except</span> <span class="n">InvalidDicomError</span><span class="p">:</span>
+</span><span id="BaseConverter-119"><a href="#BaseConverter-119"><span class="linenos">119</span></a>            <span class="k">return</span> <span class="kc">False</span>
+</span><span id="BaseConverter-120"><a href="#BaseConverter-120"><span class="linenos">120</span></a>
+</span><span id="BaseConverter-121"><a href="#BaseConverter-121"><span class="linenos">121</span></a>        <span class="k">return</span> <span class="kc">True</span>
+</span><span id="BaseConverter-122"><a href="#BaseConverter-122"><span class="linenos">122</span></a>
+</span><span id="BaseConverter-123"><a href="#BaseConverter-123"><span class="linenos">123</span></a>    <span class="nd">@abstractmethod</span>
+</span><span id="BaseConverter-124"><a href="#BaseConverter-124"><span class="linenos">124</span></a>    <span class="k">def</span><span class="w"> </span><span class="nf">run</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">path_pdf</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">path_template_dcm</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">suffix</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">List</span><span class="p">[</span><span class="n">Path</span><span class="p">]:</span>
+</span><span id="BaseConverter-125"><a href="#BaseConverter-125"><span class="linenos">125</span></a>        <span class="k">pass</span>
 </span></pre></div>
 
 
@@ -381,22 +373,22 @@ inheritance.</p>
 
     </div>
     <a class="headerlink" href="#BaseConverter.check_valid_dcm"></a>
-            <div class="pdoc-code codehilite"><pre><span></span><span id="BaseConverter.check_valid_dcm-110"><a href="#BaseConverter.check_valid_dcm-110"><span class="linenos">110</span></a>    <span class="nd">@staticmethod</span>
-</span><span id="BaseConverter.check_valid_dcm-111"><a href="#BaseConverter.check_valid_dcm-111"><span class="linenos">111</span></a>    <span class="k">def</span><span class="w"> </span><span class="nf">check_valid_dcm</span><span class="p">(</span><span class="n">path</span><span class="p">:</span> <span class="n">Path</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
-</span><span id="BaseConverter.check_valid_dcm-112"><a href="#BaseConverter.check_valid_dcm-112"><span class="linenos">112</span></a><span class="w">        </span><span class="sd">&quot;&quot;&quot;check whether given file is a dicom or not</span>
-</span><span id="BaseConverter.check_valid_dcm-113"><a href="#BaseConverter.check_valid_dcm-113"><span class="linenos">113</span></a>
-</span><span id="BaseConverter.check_valid_dcm-114"><a href="#BaseConverter.check_valid_dcm-114"><span class="linenos">114</span></a><span class="sd">        Args:</span>
-</span><span id="BaseConverter.check_valid_dcm-115"><a href="#BaseConverter.check_valid_dcm-115"><span class="linenos">115</span></a><span class="sd">            path (Path): path to a dicom file</span>
-</span><span id="BaseConverter.check_valid_dcm-116"><a href="#BaseConverter.check_valid_dcm-116"><span class="linenos">116</span></a>
-</span><span id="BaseConverter.check_valid_dcm-117"><a href="#BaseConverter.check_valid_dcm-117"><span class="linenos">117</span></a><span class="sd">        Returns:</span>
-</span><span id="BaseConverter.check_valid_dcm-118"><a href="#BaseConverter.check_valid_dcm-118"><span class="linenos">118</span></a><span class="sd">            bool: boolean value True for dicom else False</span>
-</span><span id="BaseConverter.check_valid_dcm-119"><a href="#BaseConverter.check_valid_dcm-119"><span class="linenos">119</span></a><span class="sd">        &quot;&quot;&quot;</span>
-</span><span id="BaseConverter.check_valid_dcm-120"><a href="#BaseConverter.check_valid_dcm-120"><span class="linenos">120</span></a>        <span class="k">try</span><span class="p">:</span>
-</span><span id="BaseConverter.check_valid_dcm-121"><a href="#BaseConverter.check_valid_dcm-121"><span class="linenos">121</span></a>            <span class="n">pydicom</span><span class="o">.</span><span class="n">dcmread</span><span class="p">(</span><span class="n">path</span><span class="p">,</span> <span class="n">defer_size</span><span class="o">=</span><span class="mi">1024</span><span class="p">)</span>
-</span><span id="BaseConverter.check_valid_dcm-122"><a href="#BaseConverter.check_valid_dcm-122"><span class="linenos">122</span></a>        <span class="k">except</span> <span class="n">InvalidDicomError</span><span class="p">:</span>
-</span><span id="BaseConverter.check_valid_dcm-123"><a href="#BaseConverter.check_valid_dcm-123"><span class="linenos">123</span></a>            <span class="k">return</span> <span class="kc">False</span>
-</span><span id="BaseConverter.check_valid_dcm-124"><a href="#BaseConverter.check_valid_dcm-124"><span class="linenos">124</span></a>
-</span><span id="BaseConverter.check_valid_dcm-125"><a href="#BaseConverter.check_valid_dcm-125"><span class="linenos">125</span></a>        <span class="k">return</span> <span class="kc">True</span>
+            <div class="pdoc-code codehilite"><pre><span></span><span id="BaseConverter.check_valid_dcm-106"><a href="#BaseConverter.check_valid_dcm-106"><span class="linenos">106</span></a>    <span class="nd">@staticmethod</span>
+</span><span id="BaseConverter.check_valid_dcm-107"><a href="#BaseConverter.check_valid_dcm-107"><span class="linenos">107</span></a>    <span class="k">def</span><span class="w"> </span><span class="nf">check_valid_dcm</span><span class="p">(</span><span class="n">path</span><span class="p">:</span> <span class="n">Path</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
+</span><span id="BaseConverter.check_valid_dcm-108"><a href="#BaseConverter.check_valid_dcm-108"><span class="linenos">108</span></a><span class="w">        </span><span class="sd">&quot;&quot;&quot;check whether given file is a dicom or not</span>
+</span><span id="BaseConverter.check_valid_dcm-109"><a href="#BaseConverter.check_valid_dcm-109"><span class="linenos">109</span></a>
+</span><span id="BaseConverter.check_valid_dcm-110"><a href="#BaseConverter.check_valid_dcm-110"><span class="linenos">110</span></a><span class="sd">        Args:</span>
+</span><span id="BaseConverter.check_valid_dcm-111"><a href="#BaseConverter.check_valid_dcm-111"><span class="linenos">111</span></a><span class="sd">            path (Path): path to a dicom file</span>
+</span><span id="BaseConverter.check_valid_dcm-112"><a href="#BaseConverter.check_valid_dcm-112"><span class="linenos">112</span></a>
+</span><span id="BaseConverter.check_valid_dcm-113"><a href="#BaseConverter.check_valid_dcm-113"><span class="linenos">113</span></a><span class="sd">        Returns:</span>
+</span><span id="BaseConverter.check_valid_dcm-114"><a href="#BaseConverter.check_valid_dcm-114"><span class="linenos">114</span></a><span class="sd">            bool: boolean value True for dicom else False</span>
+</span><span id="BaseConverter.check_valid_dcm-115"><a href="#BaseConverter.check_valid_dcm-115"><span class="linenos">115</span></a><span class="sd">        &quot;&quot;&quot;</span>
+</span><span id="BaseConverter.check_valid_dcm-116"><a href="#BaseConverter.check_valid_dcm-116"><span class="linenos">116</span></a>        <span class="k">try</span><span class="p">:</span>
+</span><span id="BaseConverter.check_valid_dcm-117"><a href="#BaseConverter.check_valid_dcm-117"><span class="linenos">117</span></a>            <span class="n">pydicom</span><span class="o">.</span><span class="n">dcmread</span><span class="p">(</span><span class="n">path</span><span class="p">,</span> <span class="n">defer_size</span><span class="o">=</span><span class="mi">1024</span><span class="p">)</span>
+</span><span id="BaseConverter.check_valid_dcm-118"><a href="#BaseConverter.check_valid_dcm-118"><span class="linenos">118</span></a>        <span class="k">except</span> <span class="n">InvalidDicomError</span><span class="p">:</span>
+</span><span id="BaseConverter.check_valid_dcm-119"><a href="#BaseConverter.check_valid_dcm-119"><span class="linenos">119</span></a>            <span class="k">return</span> <span class="kc">False</span>
+</span><span id="BaseConverter.check_valid_dcm-120"><a href="#BaseConverter.check_valid_dcm-120"><span class="linenos">120</span></a>
+</span><span id="BaseConverter.check_valid_dcm-121"><a href="#BaseConverter.check_valid_dcm-121"><span class="linenos">121</span></a>        <span class="k">return</span> <span class="kc">True</span>
 </span></pre></div>
 
 
@@ -423,9 +415,9 @@ inheritance.</p>
 
     </div>
     <a class="headerlink" href="#BaseConverter.run"></a>
-            <div class="pdoc-code codehilite"><pre><span></span><span id="BaseConverter.run-127"><a href="#BaseConverter.run-127"><span class="linenos">127</span></a>    <span class="nd">@abstractmethod</span>
-</span><span id="BaseConverter.run-128"><a href="#BaseConverter.run-128"><span class="linenos">128</span></a>    <span class="k">def</span><span class="w"> </span><span class="nf">run</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">path_pdf</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">path_template_dcm</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">suffix</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">List</span><span class="p">[</span><span class="n">Path</span><span class="p">]:</span>
-</span><span id="BaseConverter.run-129"><a href="#BaseConverter.run-129"><span class="linenos">129</span></a>        <span class="k">pass</span>
+            <div class="pdoc-code codehilite"><pre><span></span><span id="BaseConverter.run-123"><a href="#BaseConverter.run-123"><span class="linenos">123</span></a>    <span class="nd">@abstractmethod</span>
+</span><span id="BaseConverter.run-124"><a href="#BaseConverter.run-124"><span class="linenos">124</span></a>    <span class="k">def</span><span class="w"> </span><span class="nf">run</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">path_pdf</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">path_template_dcm</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">suffix</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">List</span><span class="p">[</span><span class="n">Path</span><span class="p">]:</span>
+</span><span id="BaseConverter.run-125"><a href="#BaseConverter.run-125"><span class="linenos">125</span></a>        <span class="k">pass</span>
 </span></pre></div>
 
 
