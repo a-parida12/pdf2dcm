@@ -4,7 +4,7 @@ from pydicom.dataset import FileMetaDataset, FileDataset, validate_file_meta
 from pydicom.errors import InvalidDicomError
 from abc import ABC, abstractmethod
 
-from pydicom.uid import generate_uid
+from pydicom.uid import generate_uid, ExplicitVRLittleEndian
 
 import tempfile
 from typing import List
@@ -58,9 +58,7 @@ class BaseConverter(ABC):
 
         file_meta = FileMetaDataset()
         file_meta.FileMetaInformationVersion = b"\x00\x01"
-        file_meta.TransferSyntaxUID = (
-            "1.2.840.10008.1.2.1"  # std transfer uid little endian, implicit vr
-        )
+        file_meta.TransferSyntaxUID = ExplicitVRLittleEndian
         file_meta.ImplementationVersionName = "pdf2dcm"
         return file_meta
 
@@ -77,8 +75,6 @@ class BaseConverter(ABC):
         filename = tempfile.NamedTemporaryFile().name
         ds = FileDataset(filename, {}, file_meta=meta, preamble=b"\0" * 128)
 
-        ds.is_little_endian = True
-        ds.is_implicit_VR = False
         ds.SOPInstanceUID = generate_uid()
 
         # if we want to create the pdf with the pdf creation timing
