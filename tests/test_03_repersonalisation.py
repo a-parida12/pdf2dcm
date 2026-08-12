@@ -72,6 +72,7 @@ def test_03_2_name_missing(pdfencapsconverter):
 
     os.remove(stored_path)
 
+
 @pytest.mark.reperson
 def test_03_4_additional_fields_personlisation(pdfrepersonconverter):
     path_pdf = "tests/test_data/test_file.pdf"

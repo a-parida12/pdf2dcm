@@ -11,7 +11,7 @@ from pdf2image import convert_from_path
 def test_04_1_get_rgbsc_meta(rgbscconverter):
     file_meta = rgbscconverter._get_rgbsc_meta()
 
-    assert type(file_meta) == FileMetaDataset
+    assert type(file_meta) is FileMetaDataset
     assert file_meta.MediaStorageSOPClassUID == uid.RGB_SC_MEDIA_SOP_CLASS_UID
     assert file_meta.MediaStorageSOPInstanceUID == uid.RGB_SC_MEDIA_SOP_INSTANCE_UID
     assert file_meta.ImplementationClassUID == uid.RGB_SC_IMPL_CLASS_UID
@@ -25,7 +25,7 @@ def test_04_2_generate_rgb_sc(rgbscconverter):
     instance = 1
     ds = rgbscconverter.generate_rgb_sc(file_meta, images[0], instance)
 
-    assert type(ds) == FileDataset
+    assert type(ds) is FileDataset
     assert len(ds.PixelData) == 5816448
     assert ds.InstanceNumber == instance
     assert ds.SOPClassUID == uid.RGB_SC_MEDIA_SOP_CLASS_UID
@@ -42,7 +42,7 @@ def test_04_3_generate_rgb_sc_merge_pages(rgbscconverter):
     instance = 1
     ds = rgbscconverter.generate_rgb_sc(file_meta, images[0], instance)
 
-    assert type(ds) == FileDataset
+    assert type(ds) is FileDataset
     assert len(ds.PixelData) == 11632896
     assert ds.SOPClassUID == uid.RGB_SC_MEDIA_SOP_CLASS_UID
 

@@ -22,7 +22,7 @@ from pydicom.dataset import FileMetaDataset, FileDataset
 class Pdf2EncapsDCM(BaseConverter):
     def __init__(self, repersonalisation_fields=[]):
         """Class for Encapsulated PDF generation
-        
+
         Args:
             repersonalisation_fields (List<String>, optional): fields to be copied to the new image
         """
