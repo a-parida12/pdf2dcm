@@ -1,6 +1,34 @@
 # CHANGELOG
 
 
+## v0.7.0 (2026-08-12)
+
+### Build System
+
+- **deps**: Bump pillow from 12.2.0 to 12.3.0 ([#85](https://github.com/a-parida12/pdf2dcm/pull/85),
+  [`9a143c0`](https://github.com/a-parida12/pdf2dcm/commit/9a143c0f6bdbe19afee9e48e7607ecda61a09ec7))
+
+Bumps [pillow](https://github.com/python-pillow/Pillow) from 12.2.0 to 12.3.0. - [Release
+  notes](https://github.com/python-pillow/Pillow/releases) -
+  [Changelog](https://github.com/python-pillow/Pillow/blob/main/CHANGES.rst) -
+  [Commits](https://github.com/python-pillow/Pillow/compare/12.2.0...12.3.0)
+
+--- updated-dependencies: - dependency-name: pillow dependency-version: 12.3.0
+
+dependency-type: direct:production
+
+...
+
+Signed-off-by: dependabot[bot] <support@github.com>
+
+Co-authored-by: dependabot[bot] <49699333+dependabot[bot]@users.noreply.github.com>
+
+### Features
+
+- Infer DICOM VR for missing metadata fields
+  ([`44a2a12`](https://github.com/a-parida12/pdf2dcm/commit/44a2a12a8b4d051c25de5edaa04551ca43185290))
+
+
 ## v0.6.1 (2026-07-22)
 
 ### Bug Fixes
