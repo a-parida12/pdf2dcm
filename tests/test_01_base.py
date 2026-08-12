@@ -7,7 +7,7 @@ from pydicom.dataset import FileMetaDataset, FileDataset
 @pytest.mark.base
 def test_01_1_get_dicom_meta(baseconverter):
     ds = baseconverter._get_dicom_meta()
-    assert type(ds) == FileMetaDataset
+    assert type(ds) is FileMetaDataset
     assert ds.ImplementationVersionName == "pdf2dcm"
 
 
@@ -16,8 +16,8 @@ def test_01_2_get_dicom_body(baseconverter):
     meta = FileMetaDataset()
     ds = baseconverter._get_dicom_body(meta)
 
-    assert type(ds) == FileDataset
-    assert type(ds.ContentTime) == str
+    assert type(ds) is FileDataset
+    assert type(ds.ContentTime) is str
     assert ds.Modality == "DOC"
     assert ds.ConversionType == "WSD"
 
@@ -27,7 +27,7 @@ def test_01_3_check_dcm(baseconverter):
     not_dicom_path = "tests/test_data/test_file.pdf"
     dicom_path = "tests/test_data/CT_small.dcm"
 
-    assert type(baseconverter.check_valid_dcm(not_dicom_path)) == bool
+    assert type(baseconverter.check_valid_dcm(not_dicom_path)) is bool
     assert not baseconverter.check_valid_dcm(not_dicom_path)
     assert baseconverter.check_valid_dcm(dicom_path)
 

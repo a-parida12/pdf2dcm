@@ -10,7 +10,7 @@ from pydicom.dataset import FileMetaDataset, FileDataset
 def test_02_1_get_encapspdf_meta(pdfencapsconverter):
     file_meta = pdfencapsconverter._get_encapspdf_meta()
 
-    assert type(file_meta) == FileMetaDataset
+    assert isinstance(file_meta, FileMetaDataset)
     assert file_meta.MediaStorageSOPClassUID == uid.ENCAPS_PDF_MEDIA_SOP_CLASS_UID
     assert file_meta.MediaStorageSOPInstanceUID == uid.ENCAPS_PDF_MEDIA_SOP_INSTANCE_UID
     assert file_meta.ImplementationClassUID == uid.ENCAPS_PDF_IMPL_CLASS_UID
@@ -22,7 +22,7 @@ def test_02_1_encapsulate_pdf(pdfencapsconverter):
     input_pdf_path = "tests/test_data/test_file.pdf"
     ds = pdfencapsconverter.encapsulate_pdf(file_meta, input_pdf_path)
 
-    assert type(ds) == FileDataset
+    assert type(ds) is FileDataset
     assert len(ds.EncapsulatedDocument) == 898332
     assert ds.SOPClassUID == uid.ENCAPS_PDF_MEDIA_SOP_CLASS_UID
     assert ds.MIMETypeOfEncapsulatedDocument == "application/pdf"

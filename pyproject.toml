@@ -26,6 +26,17 @@ pytest-cov = "7.1.0"
 pdoc = "16.0.0"
 pyyaml = "6.0.3"
 
+[tool.pytest.ini_options]
+addopts = "--cache-clear -p no:cacheprovider --strict-markers"
+junit_family = "xunit2"
+markers = [
+    "base: base converter tests",
+    "utils: utility tests",
+    "pdfencaps: encapsulated PDF converter tests",
+    "rgbsc: RGB secondary capture converter tests",
+    "reperson: metadata repersonalisation tests",
+]
+
 
 [build-system]
 requires = ["poetry-core>=1.0.0"]

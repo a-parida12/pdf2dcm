@@ -117,8 +117,7 @@ Metadata can optionally be copied from a template DICOM file to preserve patient
 - PatientID
 - PatientSex
 - StudyInstanceUID
-- ~~SeriesInstanceUID~~
-- ~~SOPInstanceUID~~
+
 
 The fields `SeriesInstanceUID` and `SOPInstanceUID` have been removed from the inheritance by copying as it violates the DICOM standards.
 
@@ -138,3 +137,8 @@ converter = Pdf2RgbSC(repersonalisation_fields=fields)
 ```
 
 note: this will overwrite the default fields.
+
+The field names must be standard DICOM keywords recognized by pydicom. If a field is
+missing from the template, pdf2dcm uses its dictionary-defined value representation (VR)
+and adds an appropriate empty value. Missing UID fields receive a newly generated UID.
+An unknown keyword raises a `ValueError`.

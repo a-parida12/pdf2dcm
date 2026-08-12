@@ -1,5 +1,7 @@
 from pathlib import Path
 import pydicom
+from pydicom.datadict import dictionary_VR, tag_for_keyword
+from pydicom.dataelem import empty_value_for_VR
 from pydicom.dataset import FileMetaDataset, FileDataset, validate_file_meta
 from pydicom.errors import InvalidDicomError
 from abc import ABC, abstractmethod
@@ -31,19 +33,24 @@ class BaseConverter(ABC):
         template_dcm = pydicom.dcmread(template_dcm_path)
 
         for field in self.repersonalisation_fields:
+            tag = tag_for_keyword(field)
+            if tag is None:
+                raise ValueError(f"Unknown DICOM keyword: {field}")
+
+            vr = dictionary_VR(tag)
             try:
-                pdf_dcm[field] = template_dcm[field]
+                pdf_dcm[tag] = template_dcm[tag]
             except KeyError:
-                if "UID" in field:
-                    pdf_dcm.add_new(field, "UI", generate_uid())
+                if vr == "UI":
+                    value = generate_uid()
                     warning_msg = f"""{field} not found in DICOM {template_dcm_path},
                     using randomly generated values!"""
                 else:
-                    # need to get the corresponding VR for the field
-                    pdf_dcm.add_new(field, "PN", "")
+                    value = empty_value_for_VR(vr)
                     warning_msg = f"""{field} not found in DICOM {template_dcm_path},
                     leaving the field empty!"""
 
+                pdf_dcm.add_new(tag, vr, value)
                 warnings.warn(warning_msg)
 
         return pdf_dcm
