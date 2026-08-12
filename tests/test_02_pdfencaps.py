@@ -10,7 +10,7 @@ from pydicom.dataset import FileMetaDataset, FileDataset
 def test_02_1_get_encapspdf_meta(pdfencapsconverter):
     file_meta = pdfencapsconverter._get_encapspdf_meta()
 
-    assert type(file_meta) is FileMetaDataset
+    assert isinstance(file_meta, FileMetaDataset)
     assert file_meta.MediaStorageSOPClassUID == uid.ENCAPS_PDF_MEDIA_SOP_CLASS_UID
     assert file_meta.MediaStorageSOPInstanceUID == uid.ENCAPS_PDF_MEDIA_SOP_INSTANCE_UID
     assert file_meta.ImplementationClassUID == uid.ENCAPS_PDF_IMPL_CLASS_UID
