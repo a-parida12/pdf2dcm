@@ -74,8 +74,14 @@ jobs:
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
           git remote set-url origin https://x-access-token:${{ secrets.GITHUB_TOKEN }}@github.com/${{ github.repository }}
       - name: Python Semantic Release
+        id: release
         uses: python-semantic-release/python-semantic-release@v9.15.0
         with:
           github_token: ${{ secrets.GH_TOKEN }}
-          repository_username: ${{ secrets.PYPI_USER }}
-          repository_password: ${{ secrets.PYPI_SECRET }}
+
+      - name: Publish package distributions to PyPI
+        if: steps.release.outputs.released == 'true'
+        uses: pypa/gh-action-pypi-publish@release/v1
+        with:
+          user: ${{ secrets.PYPI_USER }}
+          password: ${{ secrets.PYPI_SECRET }}
