@@ -17,6 +17,6 @@ Examples:
     converter.run("example.pdf")
 """
 
-__version__ = "0.7.1"
+__version__ = "0.7.2"
 from .pdf2encaps import Pdf2EncapsDCM  # noqa
 from .pdf2rgb import Pdf2RgbSC  # noqa

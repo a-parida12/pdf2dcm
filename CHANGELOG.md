@@ -1,6 +1,14 @@
 # CHANGELOG
 
 
+## v0.7.2 (2026-08-12)
+
+### Bug Fixes
+
+- Update Poetry version during releases
+  ([`e519591`](https://github.com/a-parida12/pdf2dcm/commit/e5195911fec35c11690aa3416eb03221311614c7))
+
+
 ## v0.7.1 (2026-08-12)
 
 ### Bug Fixes
