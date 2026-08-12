@@ -1,6 +1,14 @@
 # CHANGELOG
 
 
+## v0.7.1 (2026-08-12)
+
+### Bug Fixes
+
+- Publish release distributions to PyPI
+  ([`4745d85`](https://github.com/a-parida12/pdf2dcm/commit/4745d85318df995ce780bdb9fcefd2141ee88ff4))
+
+
 ## v0.7.0 (2026-08-12)
 
 ### Build System
