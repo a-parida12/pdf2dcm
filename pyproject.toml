@@ -12,7 +12,10 @@ keywords = ["dicom", "pdf", "pdf2dcm",  "pdf2dicom", "pydicom", "pdf2dicomRGB"]
 [tool.poetry.dependencies]
 python = ">=3.10,<4.0"
 pydicom = "3.0.2"
-pillow = "12.3.0"
+pillow = [
+    { version = "13.0.0", python = ">=3.11" },
+    { version = "12.3.0", python = "<3.11" },
+]
 pdf2image = "1.17.0"
 
 
